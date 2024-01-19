@@ -1,0 +1,104 @@
+<div id="albums" ng-init="init()">
+    <div class="page-header">
+        <br>
+        <h1>Albums</h1>
+        <div>
+            <span> [ view as: </span>
+            <a href="" ng-click="setAlbumsView('grid')"><span class="glyphicon glyphicon-th"></span></a>
+            <a href="" ng-click="setAlbumsView('list')"><span class="glyphicon glyphicon-th-list"></span></a>
+            <span> | sort by: </span>
+            <a href="" ng-click="sortField='title'">title</a>
+            <a href="" ng-click="sortField='artist'">artist</a>
+            <a href="" ng-click="sortField='releaseYear'">year</a>
+            <a href="" ng-click="sortField='genre'">genre</a>
+            <a href="" ng-click="sortField='userReview'">review</a>
+            <a href="" ng-click="sortField='userScore'">score</a>
+            <a href="" ng-click="sortDescending=!sortDescending">
+                <span class="glyphicon" ng-class="{'glyphicon-chevron-up' : !sortDescending, 'glyphicon-chevron-down' : sortDescending}"></span>
+            </a>
+            <span> | </span>
+            <a href="" ng-click="addAlbum()"><span class="glyphicon glyphicon-plus"></span>add an album</a>
+            <span> ] </span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div ng-include src="'templates/status.html'"></div>
+    </div>
+
+    <div class="row multi-columns-row">
+        <div ng-include src="albumsView"></div>
+        <div ng-controller="InfoController">
+            <deep-chat ng-if='info.profiles.includes("llm")' id="music-ai"   
+                introMessage="Hi I am your Spring Music assistant, ask me anything!"
+                request='{
+                "url": "/ai/rag",
+                "method": "POST",
+                "headers": {"customName": "customHeaderValue"}
+                }'
+                containerStyle='{
+                    "borderRadius": "10px",
+                    "position": "fixed",
+                    "bottom": "0px",
+                    "right": "7%",
+                    "zIndex": "1",
+                    "width": "470px",
+                    "height": "60%",
+                    "fontSize": "16px"
+                  }'
+                  messageStyles='{
+                    "default": {
+                      "shared": {
+                        "bubble": {
+                          "maxWidth": "100%", "backgroundColor": "unset", "marginTop": "10px", "marginBottom": "10px"}},
+                      "user": {
+                        "bubble": {
+                          "marginLeft": "0px", "color": "black"}},
+                      "ai": {
+                        "outerContainer": {
+                          "backgroundColor": "#FFEBF0", "borderTop": "1px solid rgba(0,0,0,.1)", "borderBottom": "1px solid rgba(0,0,0,.1)"
+                        }
+                      }
+                    }
+                  }'
+                  avatars='{
+                    "default": {"styles": {"position": "left"}},
+                    "ai": {"src": "img/openAIGreyLogo.svg"}
+                  }'
+                  submitButtonStyles='{
+                    "submit": {
+                      "container": {
+                        "default": {"backgroundColor": "#FFB3C6"},
+                        "hover": {"backgroundColor": "#FB6F92"},
+                        "click": {"backgroundColor": "#FB6F92"}
+                      },
+                      "svg": {
+                        "content": "<?xml version=\"1.0\" ?> <svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"> <g> <path d=\"M21.66,12a2,2,0,0,1-1.14,1.81L5.87,20.75A2.08,2.08,0,0,1,5,21a2,2,0,0,1-1.82-2.82L5.46,13H11a1,1,0,0,0,0-2H5.46L3.18,5.87A2,2,0,0,1,5.86,3.25h0l14.65,6.94A2,2,0,0,1,21.66,12Z\"> </path> </g> </svg>",
+                        "styles": {
+                          "default": {
+                            "width": "1.3em",
+                            "marginTop": "0.15em",
+                            "filter": "brightness(0) saturate(100%) invert(100%) sepia(28%) saturate(2%) hue-rotate(69deg) brightness(107%) contrast(100%)"
+                          }
+                        }
+                      }
+                    },
+                    "loading": {
+                      "svg": {
+                        "styles": {
+                          "default": {"filter": "brightness(0) saturate(100%) invert(72%) sepia(0%) saturate(3044%) hue-rotate(322deg) brightness(100%) contrast(96%)"}
+                        }
+                      }
+                    },
+                    "stop": {
+                      "container": {"default": {"backgroundColor": "white"}},
+                      "svg": {
+                        "styles": {
+                          "default": {"filter": "brightness(0) saturate(100%) invert(72%) sepia(0%) saturate(3044%) hue-rotate(322deg) brightness(100%) contrast(96%)"}
+                        }
+                      }
+                    }
+                  }' />
+        </div>
+    </div>
+</div>

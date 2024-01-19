@@ -1,0 +1,41 @@
+accelerator:
+  displayName: Spring Music
+  description: The classic TAS demo application, a music catalog written in java/spring, now with AI LLM support!
+  iconUrl: https://spring.io/img/projects/spring-cloud.svg
+  tags:
+  - spring 
+  - java 
+  - llm 
+  options:
+  - name: use-llm
+    dataType: boolean
+    inputType: checkbox
+    label: Attach TAS LLM Service
+    description: Bind an instance of TAS LLM and enable the chat widget
+  - name: vector-database
+    label: Vector Database (for LLM only)
+    inputType: radio
+    defaultValue: InMemory
+    dependsOn:
+      name: use-llm
+      value: true
+    choices:
+      - value: In Memory only
+        name: InMemory
+      - value: Tanzu Postgres with pgvector support
+        name: tanzu-postgres
+      - value: Greenplum Database
+        name: gpdb
+      - value: Other postgres with pgvector support
+        name: postgres
+  engine:
+    include:
+      ["**"]
+    exclude:
+      ["accelerator.yaml"]
+    let:
+    - name: usepgVector
+      expression:
+        "#vector-database != 'InMemory'"
+
+

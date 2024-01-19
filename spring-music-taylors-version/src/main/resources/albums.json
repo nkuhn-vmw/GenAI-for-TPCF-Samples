@@ -1,0 +1,92 @@
+[
+    {
+        "_class": "org.cloudfoundry.samples.music.domain.Album",
+        "artist": "Taylor Swift",
+        "title": "Taylor Swift",
+        "releaseYear": "2006",
+        "genre": "Country",
+        "userReview": "",
+        "userScore": ""
+    },
+    {
+        "_class": "org.cloudfoundry.samples.music.domain.Album",
+        "artist": "Taylor Swift",
+        "title": "Fearless",
+        "releaseYear": "2008",
+        "genre": "Country",
+        "userReview": "",
+        "userScore": ""
+    },
+    {
+        "_class": "org.cloudfoundry.samples.music.domain.Album",
+        "artist": "Taylor Swift",
+        "title": "Speak Now",
+        "releaseYear": "2010",
+        "genre": "Country",
+        "userReview": "",
+        "userScore": ""
+    },
+    {
+        "_class": "org.cloudfoundry.samples.music.domain.Album",
+        "artist": "Taylor Swift",
+        "title": "Red",
+        "releaseYear": "2012",
+        "genre": "Pop",
+        "userReview": "",
+        "userScore": ""
+    },
+    {
+        "_class": "org.cloudfoundry.samples.music.domain.Album",
+        "artist": "Taylor Swift",
+        "title": "1989",
+        "releaseYear": "2014",
+        "genre": "Pop",
+        "userReview": "",
+        "userScore": ""
+    },
+    {
+        "_class": "org.cloudfoundry.samples.music.domain.Album",
+        "artist": "Taylor Swift",
+        "title": "Reputation",
+        "releaseYear": "2017",
+        "genre": "Pop",
+        "userReview": "",
+        "userScore": ""
+    },
+    {
+        "_class": "org.cloudfoundry.samples.music.domain.Album",
+        "artist": "Taylor Swift",
+        "title": "Lover",
+        "releaseYear": "2019",
+        "genre": "Pop",
+        "userReview": "",
+        "userScore": ""
+    },
+    {
+        "_class": "org.cloudfoundry.samples.music.domain.Album",
+        "artist": "Taylor Swift",
+        "title": "Folklore",
+        "releaseYear": "2020",
+        "genre": "Pop",
+        "userReview": "",
+        "userScore": ""
+    },
+    {
+        "_class": "org.cloudfoundry.samples.music.domain.Album",
+        "artist": "Taylor Swift",
+        "title": "Evermore",
+        "releaseYear": "2020",
+        "genre": "Pop",
+        "userReview": "",
+        "userScore": ""
+    },
+    {
+        "_class": "org.cloudfoundry.samples.music.domain.Album",
+        "artist": "Taylor Swift",
+        "title": "Midnights",
+        "releaseYear": "2022",
+        "genre": "Pop",
+        "userReview": "",
+        "userScore": ""
+    }
+]

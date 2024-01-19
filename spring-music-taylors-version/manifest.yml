@@ -1,0 +1,10 @@
+---
+applications:
+- name: spring-music-ai
+  memory: 1G
+  path: build/libs/spring-music-1.0.jar
+  buildpack: java_buildpack_offline
+  env:
+    JBP_CONFIG_SPRING_AUTO_RECONFIGURATION: '{enabled: false}'
+    SPRING_PROFILES_ACTIVE: http2
+    JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 17.+ } }'
