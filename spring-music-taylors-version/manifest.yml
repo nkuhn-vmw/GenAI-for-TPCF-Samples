@@ -1,6 +1,6 @@
 ---
 applications:
-- name: spring-music-ai
+- name: spring-music-ai-taylors-version
   memory: 1G
   path: build/libs/spring-music-1.0.jar
   buildpack: java_buildpack_offline

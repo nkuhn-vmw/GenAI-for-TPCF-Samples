@@ -1,4 +1,4 @@
-0package org.cloudfoundry.samples.music.web;
+package org.cloudfoundry.samples.music.web;
 
 import java.io.IOException;
 import java.util.*;
