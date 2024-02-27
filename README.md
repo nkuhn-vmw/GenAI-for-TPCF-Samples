@@ -1,1 +1,9 @@
-# tanzu-ai-samples
+# GenAI for Tanzu Application Service Application Samples
+
+This repo is designed to hold applications written to demo the new GenAI for TAS tile.
+[See Product Page](https://tanzu.vmware.com/application-service/private-ai)
+
+See example Applications:
+1. Gradio Chat Application
+2. Spring Music (Taylor's Version)
+3. Tanzu GPT

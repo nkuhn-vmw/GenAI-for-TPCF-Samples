@@ -1,0 +1,7 @@
+applications:
+- name: tanzu-gpt
+  memory: 1G
+  buildpack: python_buildpack
+#Create a tanzu postgres databse to bind to for this app
+#services:
+#- steamlit-db
