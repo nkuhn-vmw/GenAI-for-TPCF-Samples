@@ -14,12 +14,13 @@ genai-service           shared-ai-plan                         The GenAI for TAS
 ~~~
 
 Tanzu GPT will require both a postgres database and LLM via GenAI for TAS to start correctly.
+
 Provision these services:
 
 Create a postgres database to use for pgvector embeddings - using the service name `tanzu-gpt-postgres`
 
 ~~~
-➜  ~ cf create-service postgres on-demand-postgres-db tanzu-gpt-postgres
+ ~ cf create-service postgres on-demand-postgres-db tanzu-gpt-postgres
 Creating service instance tanzu-gpt-postgres in org kuhn-labs / space homelab as admin...
 OK
 ~~~
@@ -33,4 +34,63 @@ Creating service instance tanzu-gpt-genai-service in org kuhn-labs / space homel
 Service instance tanzu-gpt-genai-service created.
 OK
 ~~~
+
+Now that the services have been provisioned, go ahead and push the application.
+
+~~~
+cf push
+Pushing app tanzu-gpt-python to org kuhn-labs / space genai-samples as admin...
+Applying manifest file /Users/nkuhn/Documents/tanzu-ai-samples/tanzu-gpt-python/manifest.yml...
+
+Updating with these attributes...
+  ---
+  applications:
+  - name: tanzu-gpt-python
+    memory: 1G
++   default-route: true
++   buildpack: python_buildpack
+    services:
+      tanzu-gpt-postgres
+      tanzu-gpt-genai-service
+Manifest applied
+Packaging files to upload...
+Uploading files...
+....
+....
+....
+Exit status 0
+   Uploading droplet, build artifacts cache...
+   Uploading droplet...
+   Uploading build artifacts cache...
+   Uploaded build artifacts cache (111.7M)
+
+Waiting for app tanzu-gpt-python to start...
+
+Instances starting...
+Instances starting...
+Instances starting...
+Instances starting...
+Instances starting...
+Instances starting...
+Instances starting...
+Instances starting...
+
+name:              tanzu-gpt-python
+requested state:   started
+routes:            tanzu-gpt-python.apps.tas-kdc.kuhn-labs.com
+last uploaded:     Wed 28 Feb 00:34:42 EST 2024
+stack:             cflinuxfs4
+buildpacks:
+	name               version   detect output   buildpack name
+	python_buildpack   1.8.15    python          python
+
+type:            web
+sidecars:
+instances:       1/1
+memory usage:    1024M
+start command:   streamlit run app.py --server.port 8080 --server.enableCORS false
+     state     since                  cpu    memory        disk           logging          details
+#0   running   2024-02-28T05:35:10Z   0.0%   67.7M of 1G   682.8M of 1G   56B/s of 16K/s
+~~~
+
 
