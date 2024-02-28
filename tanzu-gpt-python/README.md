@@ -38,7 +38,7 @@ OK
 Now that the services have been provisioned, go ahead and push the application.
 
 ~~~
-cf push
+ ~ cf push
 Pushing app tanzu-gpt-python to org kuhn-labs / space genai-samples as admin...
 Applying manifest file /Users/nkuhn/Documents/tanzu-ai-samples/tanzu-gpt-python/manifest.yml...
 
@@ -93,4 +93,6 @@ start command:   streamlit run app.py --server.port 8080 --server.enableCORS fal
 #0   running   2024-02-28T05:35:10Z   0.0%   67.7M of 1G   682.8M of 1G   56B/s of 16K/s
 ~~~
 
+
+Now that the application is up and running you should be good to go!
 

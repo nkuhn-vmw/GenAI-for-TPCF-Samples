@@ -7,3 +7,4 @@ applications:
     - tanzu-gpt-genai-service
 #Create a Tanzu Postgres databse and GenAI for TAS Service for this app to function
 #Create services ahead of time with either the cf cli or Apps Manager
+#Make sure to use the proper service names based on your deployment
