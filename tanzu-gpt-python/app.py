@@ -102,7 +102,7 @@ def read_and_textify(file):
   
 st.write("---")
 
-st.title('🦜🔗 Tanzu GPT: Conversational Bot Sample App')
+st.title('Tanzu GPT: ChatBot with pgvector embeddings ')
 
 #file uploader
 uploaded_file = st.file_uploader("Upload document", type=["txt"])

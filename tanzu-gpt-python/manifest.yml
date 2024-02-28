@@ -1,7 +1,9 @@
 applications:
-- name: tanzu-gpt
+- name: tanzu-gpt-python
   memory: 1G
   buildpack: python_buildpack
-#Create a tanzu postgres databse to bind to for this app
-#services:
-#- steamlit-db
+  services:
+    - tanzu-gpt-postgres
+    - tanzu-gpt-genai-service
+#Create a Tanzu Postgres databse and GenAI for TAS Service for this app to function
+#Create services ahead of time with either the cf cli or Apps Manager

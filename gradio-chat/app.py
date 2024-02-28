@@ -10,7 +10,7 @@ env = AppEnv()
 env.name  # 'test-app'
 env.port  # 5000
 
-llm = env.get_service(label='tanzu-ai-service')
+llm = env.get_service(label='genai-service')
 
 http_client = httpx.Client(
     verify = False
@@ -45,7 +45,7 @@ def message_and_history(input, history):
     return history, history
 block = gradio.Blocks(theme=gradio.themes.Monochrome())
 with block:
-    gradio.Markdown("""<h1><center>ChatGPT 
+    gradio.Markdown("""<h1><center>Gradio Chat:
     ChatBot with Gradio and OpenAI</center></h1>
     """)
     chatbot = gradio.Chatbot()
