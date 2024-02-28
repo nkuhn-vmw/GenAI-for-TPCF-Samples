@@ -1,7 +1,7 @@
 # GenAI for Tanzu Application Service Application Samples
 
 This repo is designed to hold applications written to demo the new GenAI for TAS tile.
-[See Product Page](https://tanzu.vmware.com/application-service/private-ai)
+[See Product Page to Sign Up for the Beta](https://tanzu.vmware.com/application-service/private-ai)
 
 See example Applications:
 1. [Gradio Chat](https://github.com/nkuhn-vmw/GenAI-for-TAS-Samples/tree/main/gradio-chat) This is the sample chat application from fastchat modified to use GenAI for TAS as the backend LLM.
