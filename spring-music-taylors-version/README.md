@@ -1,7 +1,7 @@
 Spring Music (Taylor's Version)
 ============
 
-This version of Spring Music has been modified with SpringAI to offer a "Spring Music Assistant" to use with the new GenAI for TAS tile and Tanzu Postgres database.
+This version of Spring Music has been modified with [Spring AI](https://github.com/spring-projects/spring-ai) to offer a "Spring Music Assistant" to use with the new GenAI for TAS tile and Tanzu Postgres database.
 
 You can create and bind these services after the inital `cf push` and see a behavior change with the application after restaging has been completed.
 
