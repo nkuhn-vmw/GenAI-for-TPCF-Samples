@@ -1,0 +1,8 @@
+---
+applications:
+- name: web-automation
+  disk_quota: 2G
+  memory: 2G
+  buildpacks:
+  - https://github.com/cloudfoundry/apt-buildpack
+  - python_buildpack

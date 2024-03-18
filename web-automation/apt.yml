@@ -1,0 +1,29 @@
+---
+packages:
+- xvfb
+- libnss3
+- libfontconfig1
+- gconf-service
+- libappindicator1
+- libasound2
+- libatk1.0-0
+- libatk-bridge2.0-0
+- libcairo-gobject2
+- libdrm2
+- libgbm1
+- libgconf-2-4
+- libgtk-3-0
+- libnspr4
+- libx11-xcb1
+- libxcb-dri3-0
+- libxcomposite1
+- libxcursor1
+- libxdamage1
+- libxfixes3
+- libxi6
+- libxinerama1
+- libxrandr2
+- libxshmfence1
+- libxss1
+- libxtst6
+- fonts-liberation
