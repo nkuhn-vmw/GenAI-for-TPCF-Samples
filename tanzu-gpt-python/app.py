@@ -1,11 +1,11 @@
 import streamlit as st
-from langchain.llms import OpenAI
+from langchain_community.llms import OpenAI
 from streamlit_chat import message
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.embeddings import LocalAIEmbeddings
+from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_community.embeddings import LocalAIEmbeddings
 from langchain.vectorstores.pgvector import PGVector
-from langchain.chat_models import ChatOpenAI
+from langchain_community.chat_models import ChatOpenAI
 from langchain.prompts.prompt import PromptTemplate
 from langchain.chains import ConversationalRetrievalChain
 from langchain.docstore.document import Document
@@ -19,8 +19,7 @@ from threading import Thread
 
 from langchain.document_loaders.csv_loader import CSVLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.document_loaders import PyPDFLoader
-from langchain.document_loaders import TextLoader
+from langchain_community.document_loaders import PyPDFLoader, TextLoader
 
 from cfenv import AppEnv
 
