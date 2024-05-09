@@ -1,0 +1,16 @@
+applications:
+- name: ragapi
+  memory: 2G
+  disk: 2G
+  instances: 1
+  buildpacks:
+  - python_buildpack
+  services:
+  - genai
+  - postgres-db
+  command: python RAGAPI.py
+  env:
+    EMBED_MODEL: hkunlp/instructor-xl
+    EMBED_MODEL_IS_INSTRUCTOR: True
+    LLM_MODEL: Mistral-7B-Instruct-v0.2
+  

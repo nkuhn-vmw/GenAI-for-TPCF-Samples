@@ -1,0 +1,202 @@
+# Routing HTTP/2 and gRPC traffic to apps
+Here are instructions for routing HTTP/2 and gRPC traffic to Cloud Foundry apps.
+HTTP/2 is the second major version of the the HTTP protocol.
+In routing-release v0.224.0 and later, HTTP/2 support is enabled by default.
+For more information about the HTTP/2 protocol, see [RFC 7540](https://datatracker.ietf.org/doc/html/rfc7540).
+gRPC is a Remote Procedure Call (RPC) framework that uses HTTP/2 as its transport medium.
+It is especially useful for managing communication between apps in a microservices cluster.
+For apps to serve gRPC traffic, every network hop between the client and app must use HTTP/2.
+For more information, see [gRPC](https://grpc.io/).
+
+## Performance
+HTTP/2 can provide performance improvements for apps that are built to:
+
+* Load many resources in parallel. For example, an HTML page that loads many images or JavaScript files.
+
+* Use large and repetitive headers.
+Other apps might see minimal or no performance increases.
+Experiment with your app to see how serving HTTP/2 affects its performance.
+For an example of an app that benefits from HTTP/2, see the [Cloud Foundry HTTP/2 Tile Demo App](https://github.com/Gerg/http2_tile_demo).
+
+### Limitations
+HTTP/2 support in Cloud Foundry has these limitations:
+
+* End-to-end HTTP/2 is not available for Windows Diego Cells. Routes with HTTP/2 mappings continue to send HTTP/1.1 traffic to apps that run on Windows Diego Cells.
+
+* Routes that have route services bound to them might not support end-to-end HTTP/2 depending on what protocols the bound service supports. For more information, see [Route services](https://docs.cloudfoundry.org/services/route-services.html).
+
+## How pushing apps with HTTP/2 works
+If your Cloud Foundry deployment is configured to support HTTP/2,
+then all traffic coming in to Cloud Foundry supports HTTP/2.
+The traffic is forwarded as HTTP/1.1 before it reaches your app unless configured otherwise.
+To serve gRPC traffic, your app must use HTTP/2 for all network hops.
+Configure your route to send HTTP/2 traffic to your app.
+When configured, traffic that matches the route is always sent to your app over HTTP/2 regardless of the original ingress protocol.
+For example, external HTTP/1.1 requests are forwarded to your app over HTTP/2.
+Your app does not have the opportunity to negotiate what protocol it receives.
+If a client is familiar with the HTTP/2 specification,
+your app receives HTTP/2 with prior knowledge.
+For more information, see [Starting HTTP/2 with Prior Knowledge](https://datatracker.ietf.org/doc/html/rfc7540#section-3.4) in *RFC 7540: Hypertext Transfer Protocol Version 2 (HTTP/2)*.
+
+## Push apps with HTTP/2 support
+This section describes how to push Cloud Foundry apps with support for HTTP/2.
+You do not need to make changes to existing apps to support HTTP/2.
+For information about pushing an HTTP/1.1 app that serves HTTP/2 traffic, see [Push an HTTP/1.1 App that Serves HTTP/2](https://docs.cloudfoundry.org/devguide/http2-protocol.html#http1-app).
+There are multiple ways to push an app with end-to-end HTTP/2.
+You can push the app using either the app manifest or the Cloud Foundry Command Line Interface (cf CLI).
+You can also use either method to push an app that serves gRPC traffic.
+To push an app with end-to-end HTTP/2, see:
+
+* [Push an app with end-to-end HTTP/2 using the app manifest](https://docs.cloudfoundry.org/devguide/http2-protocol.html#e2e-manifest)
+
+* [Push an app with end-to-end HTTP/2 using the cf CLI](https://docs.cloudfoundry.org/devguide/http2-protocol.html#e2e-cli)
+
+* [Push a gRPC app](https://docs.cloudfoundry.org/devguide/http2-protocol.html#grpc-app)
+
+### Push an HTTP/1.1 app that serves HTTP/2
+To push an HTTP/1.1 app that can serve HTTP/2 traffic:
+
+1. Push the HTTP/1.1 app by running:
+```
+cf push MY-APP
+```
+Where `MY-APP` is the name of your app.
+
+2. Send an HTTP/2 request to the app by running:
+```
+curl MY-APP.EXAMPLE.COM --http2 -v
+```
+Where `MY-APP.EXAMPLE.COM` is the route mapped to your app.
+The request and response are both issued over HTTP/2.
+
+**Important**
+To issue this request, you must use a version of `curl` that supports HTTP/2.
+
+3. Review the app logs by running:
+```
+cf logs MY-APP
+```
+The request to the app is issued over HTTP/1.1.
+
+### Push an app with end-to-end HTTP/2 using the app manifest
+To push an app that serves HTTP/2 traffic using the app manifest:
+
+1. Use an app that supports serving HTTP/2 traffic with prior knowledge.
+For example, you can use the HTTP/2 test app from [Cloud Foundry Acceptance Tests](https://github.com/cloudfoundry/cf-acceptance-tests/tree/main/assets/http2) on GitHub.
+
+2. Create an app manifest named `manifest.yml` with a route mapped to the app with HTTP/2:
+```
+
+---
+applications:
+
+- name: MY-APP
+routes:
+
+- route: MY-APP.EXAMPLE.COM
+protocol: http2
+```
+Where `MY-APP` is the name of your app and `MY-APP.EXAMPLE.COM` is the route you want to map to your app.
+
+3. Push the app with the manifest by running:
+```
+cf push -f manifest.yml
+```
+
+4. Send an HTTP/2 request to the app by running:
+```
+curl MY-APP.EXAMPLE.COM --http2 -v
+```
+The request and response are both sent over HTTP/2. The response from the test app includes the protocol.
+For example:
+```
+Hello, /, TLS: false, Protocol: HTTP/2.0
+```
+The response shows that the request was received over HTTP/2.
+
+### Push an app with end-to-end HTTP/2 using the cf CLI
+The recommended way to do this is using the `routes` attribute in the manifest YAML file.
+
+**Important**
+The following procedure is supported only for cf CLI v6. The `–hostname` flag is deprecated in cf CLI v7, and must be specified in the manifest.
+To push an app that serves HTTP/2 traffic using the cf CLI (v6 only):
+
+1. Use an app that supports serving HTTP/2 traffic with prior knowledge.
+For example, you can use the HTTP/2 test app from [Cloud Foundry Acceptance Tests](https://github.com/cloudfoundry/cf-acceptance-tests/tree/main/assets/http2) on GitHub.
+
+2. Push the app without a default route by running with the `--no-route` flag. Note that this flag is no longer unbinds all existing routes associated with the app.
+```
+cf push --no-route
+```
+
+3. You can map a route with destination protocol `http2` by running:
+```
+cf map-route MY-APP EXAMPLE.COM --hostname host --destination-protocol http2
+```
+Where `MY-APP` is the name of your app and `EXAMPLE.COM` is the route you want to map to your app.
+
+4. Send an HTTP/2 request to the app by running:
+```
+curl HOST.EXAMPLE.COM --http2 -v
+```
+The request and response are both sent over HTTP/2. The response from the test app includes the protocol.
+For example:
+```
+Hello, /, TLS: false, Protocol: HTTP/2.0
+```
+The response shows that the request was received over HTTP/2.
+
+### Push a gRPC app
+To push an app that serves gRPC traffic:
+
+1. Use an app that supports serving gRPC traffic.
+For example, you can use the gRPC test app from [Cloud Foundry Acceptance Tests](https://github.com/cloudfoundry/cf-acceptance-tests/tree/main/assets/grpc) on GitHub.
+
+2. Push the app with HTTP/2 activated using either the app manifest or the cf CLI.
+See [Push an app with end-to-end HTTP/2 using the app manifest](https://docs.cloudfoundry.org/devguide/http2-protocol.html#e2e-manifest) or [Push an app with end-to-end HTTP/2 using the cf CLI](https://docs.cloudfoundry.org/devguide/http2-protocol.html#e2e-cli).
+
+3. Send a gRPC request to the app using `grpcurl` by running the following command. For more information, see [grpcurl](https://github.com/fullstorydev/grpcurl).
+```
+grpcurl -vv -import-path ./test/ -proto test.proto MY-APP.EXAMPLE.COM:443 test.Test.Run
+```
+Where `MY-APP.EXAMPLE.COM` is the route to your app.
+A successful response looks like this:
+```
+Response contents:
+{
+"body": "Hello"
+}
+```
+
+## Sample applications
+Here are some sample HTTP/2 and gRPC applications from the community. You can
+use them to experiment with HTTP/2 and provide code examples for different
+languages and frameworks.
+
+* [ASP.NET Core HTTP/2 App](https://github.com/Gerg/dotnet_http2)
+
+* [Golang CATs gRPC App](https://github.com/grpc/grpc-go)
+
+* [Golang CATs HTTP/2 App](https://github.com/cloudfoundry/cf-acceptance-tests/tree/main/assets/http2)
+
+* [Golang HTTP/2 Tile App](https://github.com/Gerg/http2_tile_demo)
+
+* [Golang SAP gRPC App](https://github.com/SAP-samples/cf-routing-samples/tree/main/http2/go-grpc)
+
+* [Golang SAP HTTP/2 App](https://github.com/SAP-samples/cf-routing-samples/tree/main/http2/go-http2)
+
+* [Java SAP gRPC App](https://github.com/SAP-samples/cf-routing-samples/tree/main/http2/java-grpc)
+
+* [Java SAP HTTP/2 App](https://github.com/SAP-samples/cf-routing-samples/tree/main/http2/java-http2)
+
+* [Node SAP gRPC App](https://github.com/SAP-samples/cf-routing-samples/tree/main/http2/node-grpc)
+
+* [Node SAP HTTP/2 App](https://github.com/SAP-samples/cf-routing-samples/tree/main/http2/node-http2)
+
+* [Python SAP gRPC App](https://github.com/SAP-samples/cf-routing-samples/tree/main/http2/python-grpc)
+
+* [Python SAP HTTP/2 App](https://github.com/SAP-samples/cf-routing-samples/tree/main/http2/python-http2)
+
+* [Ruby SAP gRPC App](https://github.com/SAP-samples/cf-routing-samples/tree/main/http2/ruby-grpc)
+
+* [Ruby SAP HTTP/2 App](https://github.com/SAP-samples/cf-routing-samples/tree/main/http2/ruby-http2)

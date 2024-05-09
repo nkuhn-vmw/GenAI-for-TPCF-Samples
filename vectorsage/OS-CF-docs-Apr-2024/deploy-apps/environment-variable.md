@@ -1,0 +1,371 @@
+# Cloud Foundry environment variables
+Environment variables are the means Cloud Foundry uses to communicate with a deployed app about its environment.
+For information about setting your own app-specific environment variables, see the [Environment variable](https://docs.cloudfoundry.org/devguide/deploy-apps/manifest.html#env-block) in *Deploying with app manifests*.
+
+**Important**
+Do not use user-provided environment variables for security-sensitive information such as credentials. They might unintentionally show up in cf CLI output and Cloud Controller logs. Use [user-provided service instances](https://docs.cloudfoundry.org/devguide/services/user-provided.html) instead. The system-provided environment variable [VCAP\_SERVICES](https://docs.cloudfoundry.org/devguide/deploy-apps/environment-variable.html#VCAP_SERVICES) is properly redacted for user roles such as Space Supporter and in Cloud Controller log files.
+
+**Important**
+The maximum size of an environment variable is 130 KB. This limit applies also to Cloud Foundry system environment variables such as `VCAP_SERVICES` and `VCAP_APPLICATION`.
+
+## View environment variables
+Using the Cloud Foundry Command Line Interface (cf CLI), you can run the `cf env` command to view the Cloud Foundry environment variables for your app. The `cf env` command displays the following environment variables:
+
+* The `VCAP_APPLICATION` and `VCAP_SERVICES` variables provided in the container environment
+
+* The user-provided variables set using the `cf set-env` command
+For more information about the `cf env` command, see [env](http://cli.cloudfoundry.org/en-US/cf/env.html) in the cf CLI documentation. For more information about the `cf set-env` command, see [set-env](http://cli.cloudfoundry.org/en-US/cf/set-env.html) in the cf CLI documentation.
+The following example demonstrates the environment variables `cf env` displays:
+```
+$ cf env my-app
+Getting env variables for app my-app in org my-org / space my-space as
+admin...
+OK
+System-Provided:
+{
+"VCAP_APPLICATION": {
+"application_id": "fa05c1a9-0fc1-4fbd-bae1-139850dec7a3",
+"application_name": "my-app",
+"application_uris": [
+"my-app.example.com"
+],
+"application_version": "fb8fbcc6-8d58-479e-bcc7-3b4ce5a7f0ca",
+"cf_api": "https://api.example.com",
+"limits": {
+"disk": 1024,
+"fds": 16384,
+"mem": 256
+},
+"name": "my-app",
+"organization_id": "c0134bad-97a9-468d-ab9d-e97547e3aed5",
+"organization_name": "my-org",
+"space_id": "06450c72-4669-4dc6-8096-45f9777db68a",
+"space_name": "my-space",
+"uris": [
+"my-app.example.com"
+],
+"users": null,
+"version": "fb8fbcc6-8d58-479e-bcc7-3b4ce5a7f0ca"
+}
+}
+User-Provided:
+MY_DRAIN: http://drain.example.com
+MY_ENV_VARIABLE: 100
+```
+
+## App-specific system variables
+This section describes the environment variables that Cloud Foundry makes available to your application container. Some of these variables are the same across instances of a single app, and some vary from instance to instance.
+You can access environment variables programmatically, including variables defined by the buildpack. For more information, see the buildpack documentation for [Java](https://docs.cloudfoundry.org/buildpacks/java/java-tips.html#env-var), [Node.js](https://docs.cloudfoundry.org/buildpacks/node/node-tips.html#env-var), and [Ruby](https://docs.cloudfoundry.org/buildpacks/ruby/ruby-tips.html#env-var).
+The following table lists the system variables available to your application container.
+| Environment Variable | Running | Staging | Task |
+| --- | --- | --- | --- |
+| `CF_INSTANCE_ADDR` | x | x | x |
+| `CF_INSTANCE_GUID` | x | | x |
+| `CF_INSTANCE_INDEX` | x | | |
+| `CF_INSTANCE_INTERNAL_IP` | x | x | x |
+| `CF_INSTANCE_IP` | x | x | x |
+| `CF_INSTANCE_PORT` | x | x | x |
+| `CF_INSTANCE_PORTS` | x | x | x |
+| `CF_STACK` | | x | |
+| `DATABASE_URL` | x | | x |
+| `HOME` | x | x | x |
+| `INSTANCE_GUID` | x | | |
+| `INSTANCE_INDEX` | x | | |
+| `LANG` | x | x | x |
+| `MEMORY_LIMIT` | x | x | x |
+| `PATH` | x | x | x |
+| `PORT` | x | | |
+| `PWD` | x | x | x |
+| `TMPDIR` | x | | x |
+| `USER` | x | x | x |
+| `VCAP_APP_HOST` | x | | |
+| `VCAP_APP_PORT` | x | | |
+| `VCAP_APPLICATION` | x | x | x |
+| `VCAP_SERVICES` | x | x | x |
+
+### CF\_INSTANCE\_ADDR
+The `CF_INSTANCE_IP` and `CF_INSTANCE_PORT` of the app instance, in the format `IP:PORT`.
+For example: `CF_INSTANCE_ADDR=1.2.3.4:5678`
+For more information, see [CF\_INSTANCE\_IP](https://docs.cloudfoundry.org/devguide/deploy-apps/environment-variable.html#CF-INSTANCE-IP) and [CF\_INSTANCE\_PORT](https://docs.cloudfoundry.org/devguide/deploy-apps/environment-variable.html#CF-INSTANCE-PORT).
+
+### CF\_INSTANCE\_GUID
+The UUID of the app instance.
+For example: `CF_INSTANCE_GUID=41653aa4-3a3a-486a-4431-ef258b39f042`
+
+### CF\_INSTANCE\_INDEX
+The index number of the app instance.
+For example: `CF_INSTANCE_INDEX=0`
+
+### CF\_INSTANCE\_IP
+The external IP address of the host running the app instance.
+For example: `CF_INSTANCE_IP=1.2.3.4`
+
+### CF\_INSTANCE\_INTERNAL\_IP
+The internal IP address of the container running the app instance.
+For example: `CF_INSTANCE_INTERNAL_IP=5.6.7.8`
+
+### CF\_INSTANCE\_PORT
+The external (host-side) port corresponding to the internal (container-side) port with value `PORT`. This value is usually different from the `PORT` of the app instance.
+For example: `CF_INSTANCE_PORT=61045`
+For more information, see [PORT](https://docs.cloudfoundry.org/devguide/deploy-apps/environment-variable.html#PORT).
+
+### CF\_INSTANCE\_PORTS
+The list of mappings between internal (container-side) and external (host-side) ports allocated to the container running the app instance. Not all of the internal ports are necessarily available for the app to bind to, as some of them might be used by system-provided services that also run inside the container. These internal and external values might differ.
+For example: `CF_INSTANCE_PORTS=[{external:61045,internal:8080},{external:61046,internal:2222}]`
+
+### DATABASE\_URL
+For apps bound to certain services that use a database, Cloud Foundry creates a `DATABASE_URL` environment variable based on the `VCAP_SERVICES` environment variable.
+Cloud Foundry uses the structure of the `VCAP_SERVICES` environment variable to populate the `DATABASE_URL` environment variable. Cloud Foundry recognizes any service containing a JSON object like the following example as a candidate for the `DATABASE_URL` environment variable and uses the first candidate it finds.
+```
+{
+"some-service": [
+{
+"credentials": {
+"uri": "SOME-DATABASE-URL"
+}
+}
+]
+}
+```
+For example, see the following `VCAP_SERVICES` environment variable example:
+```
+VCAP_SERVICES =
+{
+"elephantsql": [
+{
+"name": "elephantsql-c6c60",
+"label": "elephantsql",
+"credentials": {
+"uri": "postgres://exampleuser:examplepass@babar.elephantsql.com:5432/exampledb"
+}
+}
+]
+}
+```
+Based on this `VCAP_SERVICES` environment variable, Cloud Foundry creates the following `DATABASE_URL` environment variable:
+```
+DATABASE_URL = postgres://exampleuser:examplepass@babar.elephantsql.com:5432/exampledb
+```
+For more information, see [VCAP\_SERVICES](https://docs.cloudfoundry.org/devguide/deploy-apps/environment-variable.html#VCAP-SERVICES).
+
+### HOME
+The root directory for the deployed app.
+For example: `HOME=/home/vcap/app`
+
+### LANG
+Required by buildpacks to ensure consistent script load order.
+For example: `LANG=en_US.UTF-8`
+
+### MEMORY\_LIMIT
+The maximum amount of memory that each instance of the app can consume. You specify this value in an app manifest or with the cf CLI when pushing an app. The value is limited by space and org quotas.
+If an instance exceeds the maximum limit, it is restarted. If Cloud Foundry is asked to restart an instance too frequently, the instance is stopped.
+For example: `MEMORY_LIMIT=512M`
+
+### PORT
+The port on which the app listens for requests. Cloud Foundry allocates a port for each instance of the app, so code that obtains or uses the app port refers to it using the `PORT` environment variable.
+For example: `PORT=8080`
+
+### PWD
+The present working directory where the buildpack that processed the app ran.
+For example: `PWD=/home/vcap/app`
+
+### TMPDIR
+The directory location where temporary and staging files are stored.
+For example: `TMPDIR=/home/vcap/tmp`
+
+### USER
+The user account under which the app runs.
+For example: `USER=vcap`
+
+### VCAP\_APP\_PORT
+Deprecated name for the `PORT` variable.
+
+### VCAP\_APPLICATION
+This environment variable contains the associated attributes for a deployed app. Results are returned in JSON format. The following table lists the attributes that are returned.
+| Attribute | Description |
+| --- | --- |
+| `application_id` | The GUID identifying the app |
+| `application_name` | The name assigned to the app when it was pushed |
+| `application_uris` | The URIs assigned to the app |
+| `application_version` | The GUID identifying a version of the app. Each time an app is pushed or restarted, this value is updated |
+| `cf_api` | The location of the Cloud Controller API for the Cloud Foundry deployment where the app runs |
+| `host` | Deprecated. The IP address of the app instance |
+| `limits` | The limits to disk space, number of files, and memory permitted to the app. Memory and disk space limits are supplied when the app is deployed, either on the command line or in the app manifest. The number of files allowed is operator-defined |
+| `name` | Identical to `application_name` |
+| `organization_id` | The GUID identifying the org where the app is deployed |
+| `organization_name` | The human-readable name of the org where the app is deployed |
+| `process_id` | The UID identifying the process. Only present in running application containers |
+| `process_type` | The type of process. Only present in running application containers |
+| `space_id` | The GUID identifying the space where the app is deployed |
+| `space_name` | The human-readable name of the space where the app is deployed |
+| `start` | The human-readable timestamp for the time the instance was started. Not provided on Diego Cells |
+| `started_at` | Identical to `start`. Not provided on Diego Cells |
+| `started_at_timestamp` | The UNIX epoch timestamp for the time the instance was started. Not provided on Diego Cells |
+| `state_timestamp` | Identical to `started_at_timestamp`. Not provided on Diego Cells |
+| `uris` | Identical to `application_uris`. You must ensure that both `application_uris` and `uris` are set to the same value. |
+| `users` | Deprecated. Not provided on Diego Cells |
+| `version` | Identical to `application_version` |
+
+### VCAP\_SERVICES
+For bindable services, Cloud Foundry adds connection details to the `VCAP_SERVICES` environment variable when you restart your app, after binding a service instance to your app. For more information about bindable services, see [Services overview](https://docs.cloudfoundry.org/devguide/services/).
+Cloud Foundry returns the results as a JSON document that contains an object for each service for which one or more instances are bound to the app. The service object contains a child object for each instance of the service that is bound to the app.
+The following a table defines the attributes that describe a bound service. The key for each service in the JSON document is the same as the value of the “label” attribute.
+| Attribute | Description |
+| --- | --- |
+| `binding_guid` | The GUID of the service binding |
+| `binding_name` | The name assigned to the service binding by the user |
+| `instance_guid` | The GUID of the service instance |
+| `instance_name` | The name assigned to the service instance by the user |
+| `name` | The `binding_name`, if it exists. Otherwise, the `instance_name` |
+| `label` | The name of the service offering |
+| `tags` | An array of strings an app can use to identify a service instance |
+| `plan` | The service plan selected when the service instance was created |
+| `credentials` | A JSON object containing the service-specific credentials needed to access the service instance |
+| `syslog_drain_url` | The service-specific syslog drain URL |
+| `volume_mounts` | An array of service-specific volume mounts |
+To see the value of the `VCAP_SERVICES` environment variable for an app pushed to Cloud Foundry, see [View environment variable values](https://docs.cloudfoundry.org/devguide/deploy-apps/environment-variable.html#view-env).
+The following example shows the value of the `VCAP_SERVICES` environment variable for bound instances of several services available in the Marketplace.
+```
+VCAP_SERVICES=
+{
+"elephantsql": [
+{
+"name": "elephantsql-binding-c6c60",
+"binding_guid": "44ceb72f-100b-4f50-87a2-7809c8b42b8d",
+"binding_name": "elephantsql-binding-c6c60",
+"instance_guid": "391308e8-8586-4c42-b464-c7831aa2ad22",
+"instance_name": "elephantsql-c6c60",
+"label": "elephantsql",
+"tags": [
+"postgres",
+"postgresql",
+"relational"
+],
+"plan": "turtle",
+"credentials": {
+"uri": "postgres://exampleuser:examplepass@babar.elephantsql.com:5432/exampleuser"
+},
+"syslog_drain_url": null,
+"volume_mounts": []
+}
+],
+"sendgrid": [
+{
+"name": "mysendgrid",
+"binding_guid": "6533b1b6-7916-488d-b286-ca33d3fa0081",
+"binding_name": null,
+"instance_guid": "8c907d0f-ec0f-44e4-87cf-e23c9ba3925d",
+"instance_name": "mysendgrid",
+"label": "sendgrid",
+"tags": [
+"smtp"
+],
+"plan": "free",
+"credentials": {
+"hostname": "smtp.sendgrid.net",
+"username": "QvsXMbJ3rK",
+"password": "HCHMOYluTv"
+},
+"syslog_drain_url": null,
+"volume_mounts": []
+}
+]
+}
+```
+
+## Environment variable groups
+Environment variable groups are system-wide variables that allow operators to apply a group of environment variables to all running apps and all staging apps separately.
+An environment variable group consists of a single hash of name-value pairs that are later inserted into an application container at runtime or at staging. These values can contain information such as HTTP proxy information. The values for variables set in an environment variable group are case-sensitive.
+When creating environment variable groups:
+
+* Only the Cloud Foundry operator can set the hash value for each group.
+
+* All authenticated users can get the environment variables assigned to their app.
+
+* All variable changes take effect after the operator restarts or restages the apps.
+
+* Any user-defined variable takes precedence over environment variables provided by these groups.
+The following table lists the commands for environment variable groups.
+| CLI Command | Description |
+| --- | --- |
+| `running-environment-variable-group` or `revg` | Retrieves the contents of the running environment variable group |
+| `staging-environment-variable-group` or `sevg` | Retrieves the contents of the staging environment variable group |
+| `set-staging-environment-variable-group` or `ssevg` | Passes parameters as JSON to create a staging environment variable group |
+| `set-running-environment-variable-group` or `srevg` | Passes parameters as JSON to create a running environment variable group |
+The following examples demonstrate how to retrieve the environment variables:
+```
+$ cf revg
+Retrieving the contents of the running environment variable group as
+sampledeveloper@example.com...
+OK
+Variable Name Assigned Value
+HTTP Proxy 198.51.100.130
+$ cf sevg
+Retrieving the contents of the staging environment variable group as
+sampledeveloper@example.com...
+OK
+Variable Name Assigned Value
+HTTP Proxy 203.0.113.105
+EXAMPLE-GROUP 2001
+$ cf apps
+Getting apps in org SAMPLE-ORG-NAME / space dev as
+sampledeveloper@example.com...
+OK
+name requested state instances memory disk urls
+my-app started 1/1 256M 1G my-app.com
+$ cf env APP-NAME
+Getting env variables for app APP-NAME in org SAMPLE-ORG-NAME / space dev as
+sampledeveloper@example.com...
+OK
+System-Provided:
+{
+"VCAP_APPLICATION": {
+"application_name": "APP-NAME",
+"application_uris": [
+"my-app.example.com"
+],
+"application_version": "7d0d64be-7f6f-406a-9d21-504643147d63",
+"limits": {
+"disk": 1024,
+"fds": 16384,
+"mem": 256
+},
+"name": "APP-NAME",
+"organization_id": "c0134bad-97a9-468d-ab9d-e97547e3aed5",
+"organization_name": "my-org",
+"space_id": "37189599-2407-9946-865e-8ebd0e2df89a",
+"space_name": "dev",
+"uris": [
+"my-app.example.com"
+],
+"users": null,
+"version": "7d0d64be-7f6f-406a-9d21-504643147d63"
+}
+}
+Running Environment Variable Groups:
+HTTP Proxy: 198.51.100.130
+Staging Environment Variable Groups:
+EXAMPLE-GROUP: 2001
+HTTP Proxy: 203.0.113.105
+```
+The following examples demonstrate how to set environment variables:
+```
+$ cf ssevg '{"test":"198.51.100.130","test2":"203.0.113.105"}'
+Setting the contents of the staging environment variable group as admin...
+OK
+$ cf sevg
+Retrieving the contents of the staging environment variable group as admin...
+OK
+Variable Name Assigned Value
+test 198.51.100.130
+test2 203.0.113.105
+$ cf srevg '{"test3":"2001","test4":"2010"}'
+Setting the contents of the running environment variable group as admin...
+OK
+$ cf revg
+Retrieving the contents of the running environment variable group as admin...
+OK
+Variable Name Assigned Value
+test3 2001
+test4 2010
+```

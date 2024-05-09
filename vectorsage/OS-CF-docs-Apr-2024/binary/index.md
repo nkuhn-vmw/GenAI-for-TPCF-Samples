@@ -1,0 +1,133 @@
+# Binary buildpack
+Use the binary buildpack to run arbitrary binary web servers.
+
+## Push an app
+Specify the binary buildpack to stage an app as a binary file.
+On a command line, use `cf push MY-AWESOME-APP` with the `-b` option to specify the
+buildpack.
+For example:
+```
+$ cf push MY-AWESOME-APP -b https://github.com/cloudfoundry/binary-buildpack.git
+```
+You can provide Cloud Foundry with the shell command to run your binary in
+the following two ways:
+
+* **Procfile**: In the root directory of your app, add a `Procfile` that
+specifies a `web` task:
+```
+web: ./app
+```
+
+* **Command line**: Use `cf push MY-AWESOME-APP` with the `-c` option:
+```
+$ cf push MY-AWESOME-APP -c './app' -b binary_buildpack
+```
+
+## Compile your binary
+Cloud Foundry expects your binary to bind to the port specified by the `PORT`
+environment variable.
+The following example in [Go](https://golang.org/) binds a binary to the PORT
+environment variable:
+```
+package main
+import (
+"fmt"
+"net/http"
+"os"
+)
+func handler(w http.ResponseWriter, r \*http.Request) {
+fmt.Fprintf(w, "Hello, %s", "world!")
+}
+func main() {
+http.HandleFunc("/", handler)
+http.ListenAndServe(":"+os.Getenv("PORT"), nil)
+}
+```
+Your binary should run without any additional runtime dependencies on the
+cflinuxfs3 or lucid64 root filesystem (rootfs).
+Any such dependencies should be statically linked to the binary.
+Important
+To avoid security exposure, verify that you migrate your apps and custom buildpacks to use
+the `cflinuxfs4` stack based on Ubuntu 22.04 LTS (Jammy Jellyfish). The `cflinuxfs3` stack is based on Ubuntu 18.04 (Bionic Beaver), which
+reaches end of standard support in April 2023.
+To boot a Docker container running the cflinuxfs3 filesystem, run the following
+command:
+```
+$ docker run -it cloudfoundry/cflinuxfs3 bash
+```
+To boot a Docker container running the lucid64 filesystem, run the following
+command:
+```
+$ docker run -it cloudfoundry/lucid64 bash
+```
+To compile the above Go application on the rootfs, golang must be installed. `apt-get install golang` and `go build app.go` will produce an `app` binary.
+When deploying your binary to Cloud Foundry, use `cf push` with the `-s` option to specify the root filesystem it should run against.
+```
+$ cf push MY-AWESOME-APP -s (cflinuxfs3|lucid64)
+```
+
+## BOSH configured custom trusted certificate support
+Your platform operator can configure the platform to add the custom certificates into the application container.
+The custom trusted certificates are added to the `/etc/ssl/certs` directory and can be used by binary applications.
+For more information, see [Configuring Trusted System Certificates for Applications](https://docs.cloudfoundry.org/running/trusted-system-certificates.html).
+
+## .NET apps
+
+**.NET Core on Windows**
+To run .NET Core apps on the Windows stack, you must use the Binary buildpack. Follow the steps below to configure your
+Cloud Foundry manifest appropriately.
+
+1. In the app manifest file, specify the `windows` stack and a custom start command.
+This file should be in the same folder as your `.csproj` file and be marked **copy always**.
+```
+
+---
+applications:
+
+- name: MY-AWESOME-APP
+stack: windows
+command: cmd /c .\MY-AWESOME-APP --urls=http://0.0.0.0:%PORT%
+```
+
+2. Publish the project using the dotnet CLI or Visual Studio.
+```
+$ dotnet publish -o ./publish -r win10-x64 -f netcoreapp2.1
+```
+
+3. A `publish` folder should now exist. Navigate to this `publish` folder and verify the `manifest.yml` file exists. Run `cf push` to deploy your app.
+```
+$ cd publish
+$ cf push MY-AWESOME-APP
+```
+
+**.NET Framework**
+To run a self hosted application using OWIN or another kind of .NET Framework app that requires a TCP port, compile the app
+to `myapp.exe` and use the Binary buildpack. For an example, see the following manifest:
+```
+applications:
+
+- name: MY-AWESOME-APP
+stack: windows
+command: cmd /c .\MY-AWESOME-APP --server.urls=http://0.0.0.0:%PORT%
+```
+
+**Console Apps**
+Console apps are not recommended to run on Cloud Foundry because they do not normally run as a single instance and are not highly available. If you need to run a console app on Cloud Foundry, see [Console Applications](https://tanzu.vmware.com/developer/cookbooks/dotnet/headless/) in the .NET Cookbook.
+For information about deploying different types of .NET apps, follow the links in the table below.
+| Type of .NET App | Buildpack |
+| --- | --- |
+|
+ASP.NET MVC
+ASP.NET Web Forms
+ASP.NET WebAPI Apps
+Windows Communication Foundation (WCF)
+| [HWC](https://docs.cloudfoundry.org/buildpacks/hwc/index.html) |
+| .NET Core pushed to Linux stack | [.NET Core](https://docs.cloudfoundry.org/buildpacks/dotnet-core/index.html) |
+
+## Help and support
+Join the #buildpacks channel in our [Slack community](http://slack.cloudfoundry.org/) if you need any further assistance.
+For more information about using and extending the binary buildpack in Cloud
+Foundry, see the [binary-buildpack GitHub repository](https://github.com/cloudfoundry/binary-buildpack).
+You can find current information about this buildpack on the binary buildpack
+[release page](https://github.com/cloudfoundry/binary-buildpack/releases) in
+GitHub.
