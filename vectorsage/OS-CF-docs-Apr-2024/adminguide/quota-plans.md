@@ -1,0 +1,361 @@
+# Creating and modifying quota plans in Cloud Foundry
+You can use quota plans in Cloud Foundry, including creating and modifying quota plans for orgs and spaces.
+
+## Quota plans overview
+Quota plans are named sets of memory, service, log rate, and instance usage quotas. For example, one quota plan might allow up to 10 services, 10 routes,
+2 GB of RAM, and 2 KB of generated logs, while another might offer 100 services, 100 routes, 10 GB of RAM, and 16 KB of generated logs.
+Quota plans have user-friendly names, but are referenced in Cloud Foundry internal systems by unique GUIDs.
+Quota plans are not directly associated with user accounts. Instead, every org has a list of available quota plans, and the account admin assigns a specific
+quota plan from the list to the org. Everyone in the org shares the quotas described by the plan. There is no limit to the number of defined quota plans an
+account can have, but only one plan can be assigned at a time.
+You must set a quota plan for an org, but you can choose whether to set a space quota. For more information, see the [Orgs](https://docs.cloudfoundry.org/concepts/roles.html#orgs) and
+[Spaces](https://docs.cloudfoundry.org/concepts/roles.html#spaces) sections of the *Orgs, Spaces, Roles, and Permissions* topic.
+For information about managing network policy quotas, see [Manage Network Policy Quotas](https://docs.cloudfoundry.org/devguide/deploy-apps/cf-networking.html#policy-quotas) in
+
+*Configuring Container-to-Container Networking*.
+
+## Org quota plan attributes
+| **Name** | **Description** | **Valid Values** | **Example Value** |
+| --- | --- | --- | --- |
+| `name` | The name used to identify the plan | A sequence of letters, digits, and underscore characters. Quota plan names within an account must be unique. | silver\_quota |
+| `total_memory_in_mb` | Total memory allowed for all the started processes and running tasks in an organization | An integer | 2048 |
+| `total_instances` | Total instances of all the started processes allowed in an organization. | An integer | 25 |
+| `per_process_memory_in_mb` | Maximum memory for a single process or task | An integer | 2048 |
+| `log_rate_limit_in_bytes_per_second` | Total log rate limit allowed for all the started processes and running tasks in an organization | An integer | 1024 |
+| `per_app_tasks` | Maximum number of running tasks in an organization | An integer | 5 |
+| `paid_services_allowed` | Specifies whether instances of paid service plans can be created. | `true` or `false` | true |
+| `total_service_instances` | Total number of service instances allowed in an organization. | An integer | 10 |
+| `total_service_keys` | Total number of service keys allowed in an organization. | An integer | 20 |
+| `total_routes` | Total number of routes allowed in an organization. | An integer | 500 |
+| `total_reserved_ports` | Total number of ports that are reservable by routes in an organization. | An integer not greater than `routes.total_routes` | 60 |
+| `total_domains` | Total number of domains that can be scoped to an organization. | An integer | 6 |
+| `organizations` | A relationship to the organizations where the quota is applied. | A list of organization guids | 9b370018-c38e-44c9-86d6-155c76801104, 12370033-458e-44c2-12d6-789c76801005 |
+| `trial_db_allowed` | This is a legacy field. Value can be ignored. | `true` or `false` | true |
+
+## Default quota plan for an org
+Cloud Foundry installs with a quota plan named `default` with the following values:
+
+* Memory limit: `10240 MB`
+
+* Total routes: `1000`
+
+* Total services: `100`
+
+* Non-basic aervices allowed: `true`
+
+* Trial DB allowed: `true`
+
+* Log rate limit: `unlimited`
+
+## Create a quota plan for an org
+The org manager sets and manages quotas. For more information, see [Orgs, Spaces,
+Roles, and Permissions](https://docs.cloudfoundry.org/concepts/roles.html).
+You must create an org quota plan. You can create a quota plan for an org in one of following ways:
+
+* Directly modify the manifest for your Cloud Foundry deployment before deploying. For more information, see [Create a Quota Plan for an Org
+Through the Deployment Manifest](https://docs.cloudfoundry.org/adminguide/quota-plans.html#new-edit-manifest).
+
+* Create an org quota plan through the Cloud Foundry Command Line Interface (cf CLI) after deploying. For more information, see [Create a Quota Plan for an
+Org Through the cf CLI](https://docs.cloudfoundry.org/adminguide/quota-plans.html#create-org-quota).
+
+### Create a quota plan for an org through the deployment manifest
+The manifest for your Cloud Foundry deployment specifies the default quota plans applied to orgs. You can modify the default quota plans by
+locating and editing the manifest.
+To modify the deployment manifest:
+
+1. In a text editor, open the deployment manifest YAML file.
+
+2. Search for `quota_definitions`.
+
+3. Add a new quota definition with values that you specify. Use the default quota definition as a formatting template. The following example shows the
+`quota_definitions` portion of the `cf.yml` manifest after adding the `silver_quota` plan:
+```
+quota_definitions:
+default:
+memory_limit: 1024M
+log_rate_limit: 8K
+non_basic_services_allowed: true
+total_routes: 1000
+total_services: 100
+trial_db_allowed: true
+silver_quota:
+memory_limit: 2048M
+log_rate_limit: 16K
+non_basic_services_allowed: true
+total_routes: 500
+total_services: 25
+trial_db_allowed: true
+```
+
+4. Save and close the deployment manifest.
+
+5. Apply the deployment manifest by running:
+```
+bosh -e ENV -d DEPLOYMENT deploy MANIFEST.yml
+```
+Where:
+
+* `ENV` is your BOSH Director alias.
+
+* `DEPLOYMENT` is the name of your deployment.
+
+* `MANIFEST` is the filename of the deployment manifest.
+Any subsequent updates to the quota in the manifest are not applied to your environment after the initial deploy, even
+though BOSH updates the Cloud Controller instance with new settings.
+
+### Creating a quota plan for an org through the cf CLI
+To create a new quota plan for an org through the cf CLI:
+
+1. Run:
+```
+cf create-org-quota QUOTA-NAME -m TOTAL-MEMORY -i INSTANCE-MEMORY -l LOG-RATE-LIMIT -r NUMBER-OF-ROUTES -s NUMBER-OF-SERVICE-INSTANCES
+```
+Where:
+
+* `QUOTA-NAME` is the name you want to give the quota plan.
+
+* `TOTAL-MEMORY` is the total amount of memory you want to allocate to all app instances in the org.
+
+* `INSTANCE-MEMORY` is the maximum amount of memory an app instance can use. Specify `-1` to allow app instances to use an unlimited amount of memory.
+
+* `LOG-RATE-LIMIT` is the total number of logs per second you want to allow all app instances in the org to send to Loggregator.
+
+* `NUMBER-OF-ROUTES` is the total number of routes you want to allow all app instances in the org.
+
+* `NUMBER-OF-SERVICE-INSTANCES` is the total number of service instances you want to allow all app instances in the org.
+
+* (Optional) Include the `--allow-paid-service-plans` flag to allow the quota plan to provision instances of paid service plans.
+For example:
+```
+cf create-org-quota small -m 2048M -i 1024M -l 2K -r 10 -s 10 --allow-paid-service-plans
+```
+
+## Modifying a quota plan for an org
+You can modify an existing quota plan for an org in one of two ways:
+
+* Directly modify the manifest for your Cloud Foundry deployment before deploying. For more information, see [Modify a Quota Plan for an Org
+Through the the Deployment Manifest](https://docs.cloudfoundry.org/adminguide/quota-plans.html#modify-edit-manifest).
+
+* Modify the quota plan for the org through the cf CLI after deploying. For more information, see [Modify a Quota Plan for an Org Through the cf
+CLI](https://docs.cloudfoundry.org/adminguide/quota-plans.html#update-org-quota).
+
+### Modify a quota plan for an org through the deployment manifest
+To modify the Cloud Foundry deployment manifest:
+
+1. In a text editor, open the deployment manifest YAML file.
+
+2. Search for `quota_definitions`.
+
+3. Modify the value of the attribute.
+
+4. Save and close the deployment manifest.
+
+### Modify a quota plan for an org through the cf CLI
+To modify an existing quota plan for an org through the cf CLI:
+
+1. View all existing quota plans for your org by running:
+```
+cf org-quotas
+```
+This command returns output similar to the following example:
+```
+Getting org quotas as admin...
+name total memory instance memory routes service instances paid service plans app instances route ports log volume per second
+default 100G unlimited 1000 unlimited allowed unlimited 100 unlimited
+free 0 unlimited 1000 0 disallowed unlimited 0 4K
+paid 10M unlimited 1000 unlimited allowed unlimited 0 unlimited
+small 1G 1G 10 10 allowed unlimited 0 2K
+trial 2G 1G 1000 0 disallowed unlimited 0 1K
+```
+
+2. Record the name of the quota plan you want to modify.
+
+3. Run:
+```
+cf update-org-quota QUOTA-NAME -n NEW-QUOTA-NAME -m TOTAL-MEMORY -i INSTANCE-MEMORY -r NUMBER-OF-ROUTES -s NUMBER-OF-SERVICE-INSTANCES
+```
+Where:
+
+* `QUOTA-NAME` is the name of the quota plan you want to modify.
+
+* (Optional) `NEW-QUOTA-NAME` is the new name you want to give the quota plan.
+
+* (Optional) `TOTAL-MEMORY` is the total amount of memory you want to allocate to all app instances in the org.
+
+* (Optional) `INSTANCE-MEMORY` is the maximum amount of memory an app instance can use. Specify `-1` to allow app instances to use an unlimited amount of
+memory.
+
+* (Optional) `LOG-RATE-LIMIT` is the total number of logs per second you want to allow all app instances in the org to send to Loggregator.
+
+* (Optional) `NUMBER-OF-ROUTES` is the total number of routes you want to allow all app instances in the org.
+
+* (Optional) `NUMBER-OF-SERVICE-INSTANCES` is the total number of service instances you want to allow all app instances in the org.
+
+* (Optional) To allow the quota plan to provision instances of paid service plans, include the `--allow-paid-service-plans` flag. To prevent the quota
+plan from provisioning instances of paid service plans, include the `--disallow-paid-service-plans` flag.
+For example:
+```
+cf update-org-quota small -n medium -m 4096M -i 2048M -l 8K -r 20 -s 20 --allow-paid-service-plans
+```
+
+## Assign a quota plan to an org
+To assign a quota plan to an org:
+
+1. Run:
+```
+cf set-org-quota ORG QUOTA-NAME
+```
+Where:
+
+* `ORG` is the name of the org to which you want to assign the quota plan.
+
+* `QUOTA-NAME` is the name of the quota plan you want to assign to the org.
+
+## Create and modify quota plans for a space
+For each org, Org Managers create and modify quota plans for spaces in the org. If an Org Manager allocates a space quota, Cloud Foundry
+verifies that resources do not exceed the allocated space limit. For example, when a Space Developer deploys an app, Cloud Foundry first checks
+the memory allocation at the space level, then at the org level.
+To create a quota plan for an individual space within an org, see [Create a Quota Plan for a Space](https://docs.cloudfoundry.org/adminguide/quota-plans.html#new-space-plan).
+To modify a quota plan for an individual space within an org, see [Modify a Quota Plan for a Space](https://docs.cloudfoundry.org/adminguide/quota-plans.html#modify-space-plan).
+
+### Creating a quota plan for a space
+To create a quota plan for an individual space within an org:
+
+1. Run:
+```
+cf create-space-quota QUOTA-NAME -m TOTAL-MEMORY -i INSTANCE-MEMORY -l LOG-RATE-LIMIT -r NUMBER-OF-ROUTES -s NUMBER-OF-SERVICE-INSTANCES
+```
+Where:
+
+* `TOTAL-MEMORY` is the total amount of memory you want to allocate to all app instances in the space.
+
+* `INSTANCE-MEMORY` is the maximum amount of memory an app instance can use. Specify `-1` to allow app instances to use an unlimited amount of memory.
+
+* `LOG-RATE-LIMIT` is the total number of logs per second you want to allow all app instances in the org to send to Loggregator.
+
+* `NUMBER-OF-ROUTES` is the total number of routes you want to allow all app instances in the space.
+
+* `NUMBER-OF-SERVICE-INSTANCES` is the total number of service instances you want to allow all app instances in the space.
+
+* (Optional) Include the `--allow-paid-service-plans` flag to allow the quota plan to provision instances of paid service plans.
+For example:
+```
+cf create-space-quota big -m 4096M -i 1024M -l 16K -r 20 -s 20 --allow-paid-service-plans
+```
+
+### Modifying a quota plan for a space
+To modify a quota plan for an individual space within an org:
+
+1. View all existing quota plans for all of the spaces in your org by running:
+```
+cf space-quotas
+```
+The above command returns output similar to the following example:
+```
+Getting space quotas for org example-org as admin...
+name total memory instance memory routes service instances paid service plans app instances route ports log volume per second
+big 4G 1G 20 20 allowed unlimited 0 16K
+trial 2G 1G 20 20 allowed unlimited 0 2K
+```
+
+2. Record the name of the quota plan you want to modify.
+
+3. Run:
+```
+cf update-space-quota QUOTA-NAME -n NEW-QUOTA-NAME -m TOTAL-MEMORY -i INSTANCE-MEMORY -r NUMBER-OF-ROUTES -s NUMBER-OF-SERVICE-INSTANCES
+```
+Where:
+
+* `QUOTA-NAME` is the name of the quota plan you want to modify.
+
+* (Optional) `NEW-QUOTA-NAME` is the new name you want to give the quota plan.
+
+* (Optional) `TOTAL-MEMORY` is the total amount of memory you want to allocate to all app instances in the space.
+
+* (Optional) `INSTANCE-MEMORY` is the maximum amount of memory an app instance can use. Specify `-1` to allow app instances to use an unlimited amount of
+memory.
+
+* (Optional) `LOG-RATE-LIMIT` is the total number of logs per second you want to allow all app instances in the org to send to Loggregator.
+
+* (Optional) `NUMBER-OF-ROUTES` is the total number of routes you want to allow all app instances in the space.
+
+* (Optional) `NUMBER-OF-SERVICE-INSTANCES` is the total number of service instances you want to allow all app instances in the space.
+
+* (Optional) To allow the quota plan to provision instances of paid service plans, include the `--allow-paid-service-plans` flag. To prevent the quota
+plan from provisioning instances of paid service plans, include the `--disallow-paid-service-plans` flag.
+For example:
+```
+cf update-space-quota big -n bigger -m 4096M -i 20 -l 32K -r 20 -s 20 --allow-paid-service-plans
+```
+
+## Assign a quota plan to a space
+To assign a quota to a space, run the following command. Replace the placeholder attributes with the values for this quota plan:
+To assign a quota plan to a space:
+
+1. In a terminal window, run:
+```
+cf set-space-quota SPACE QUOTA-NAME
+```
+Where:
+
+* `SPACE` is the name of the space to which you want to assign the quota plan.
+
+* `QUOTA-NAME` is the name of the quota plan you want to assign to the space.
+
+**Important**
+If you attempt to assign a quota plan with a log rate limit to a space containing apps that are already configured to
+send an unlimited number of logs to Loggregator, the command returns an error. To remedy this issue, see
+[Configure apps with unlimited Log Rate Limits](https://docs.cloudfoundry.org/adminguide/quota-plans.html#update-log-rate-limit).
+
+### Configure apps with unlimited log rate limits
+If you assign a quota plan with a log rate limit to a space containing apps that are already configured to send an unlimited number of logs to Loggregator,
+you see an error similar to the following example:
+```
+Setting space quota big to space example-space as admin...
+Current usage exceeds new quota values. The space(s) being assigned this quota contain apps running with an unlimited log rate limit.
+FAILED
+```
+Before you can assign a quota plan to the space, you must configure each app in the space with a log rate limit that is lower than the log rate limit
+specified in the quota plan.
+To update the log rate limit for an app in the space to which you want to assign a quota plan:
+
+1. Run:
+```
+cf scale -l LOG-RATE-LIMIT APP-NAME
+```
+Where:
+
+* `LOG-RATE-LIMIT` is the log rate limit in bytes per second that you want to configure for the app.
+
+* `APP-NAME` is the name of the app for which you want to configure a log rate limit.
+After you have configured a log rate limit for each app in the space, follow the procedure in [Assign a Quota Plan to a Space](https://docs.cloudfoundry.org/adminguide/quota-plans.html#set-space-quota).
+
+## View list of space and org quota commands
+To view a list and brief description of all cf CLI commands related to space and org quotas:
+
+1. Run:
+```
+cf help -a
+```
+
+2. In the terminal output, find the following commands:
+```
+...
+ORG ADMIN:
+org-quotas List available organization quotas
+org-quota Show organization quota
+set-org-quota Assign a quota to an organization
+create-org-quota Define a new quota for an organization
+delete-org-quota Delete an organization quota
+update-org-quota Update an existing organization quota
+share-private-domain Share a private domain with a specific org
+unshare-private-domain Unshare a private domain with a specific org
+SPACE ADMIN:
+space-quotas List available space quotas
+space-quota Show space quota info
+create-space-quota Define a new quota for a space
+update-space-quota Update an existing space quota
+delete-space-quota Delete a space quota
+set-space-quota Assign a quota to a space
+unset-space-quota Unassign a quota from a space
+```

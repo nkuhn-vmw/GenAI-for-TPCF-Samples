@@ -1,0 +1,173 @@
+# Sharing service instances
+Here are instructions for sharing service instances in your Cloud Foundry apps.
+
+## About service instance sharing
+Sharing a service instance among multiple spaces and across orgs allows apps to share databases, messaging queues, and other types of services.
+This eliminates the need for development teams to use service keys and
+user-provided services to bind their apps to the same service instance that was
+provisioned using the `cf create-service` command.
+Sharing service instances improves security and auditing, and provides a more intuitive user experience.
+
+* Developers and administrators can share service instances between spaces
+in which they have the Space Developer role.
+
+* Developers who have a service instance shared with them can only bind and
+unbind apps to that service instance. They cannot update, rename, or delete it.
+
+* Developers who have a service instance shared with them can view
+the values of any configuration parameters that were used to provision or update the service instance.
+For example, if two development teams have apps in their own spaces,
+and both apps want to send messages to each other using a
+messaging queue:
+
+1. The development team in space A can create a new instance of
+a messaging queue service, bind it to their app, and share that service instance into space B.
+
+2. A developer in space B can then bind their app to the same service
+instance, and the two apps can begin publishing and receiving
+messages from one another.
+
+## Activating service instance sharing in Cloud Foundry
+To activate service instance sharing, the platform operator must activate the `service_instance_sharing` flag in Cloud Foundry.
+```
+$ cf enable-feature-flag service_instance_sharing
+```
+
+## Sharing a service instance
+You can share a service instance from one space to another if you have the Space Developer role in both spaces.
+To share a service instance to another space, run the following Cloud
+Foundry Command Line Interface (cf CLI) command:
+```
+$ cf share-service SERVICE-INSTANCE -s OTHER-SPACE [-o OTHER-ORG]
+```
+
+* You cannot share a service instance into a space where a service
+instance with the same name already exists.
+
+* To share a service instance into a space, the space must have access to the
+service and service plan of the service instance that you are sharing. Run the `cf enable-service-access` command to set this access.
+
+* If you no longer have access to the service or service plan used to create your service instance,
+you cannot share that service instance.
+
+## Get information about service instance sharing
+To get information about service instance sharing on the originating space, run the following cf CLI command from that originating space:
+```
+cf service SERVICE-INSTANCE-NAME
+```
+For example:
+```
+$ cf service mydb
+name: mydb
+service: p-mysql
+tags:
+plan: 100mb
+description: mysql databases on demand been created by a platform.
+documentation:
+dashboard:
+service broker: mysql-broker
+shared with spaces:
+org space bindings
+org-1 space-1 0
+org-1 space-2 2
+Showing status of last operation from service my-service-3...
+status: create succeeded
+message: Operation succeeded
+started: 2021-03-01T15:10:15Z
+updated: 2021-03-01T15:10:17Z
+bound apps:
+name binding name status message
+my-music-app create succeeded Operation succeeded
+No upgrade available for this service.
+```
+
+* For each of the spaces, the service instance is shared into the output. The output shows the number of bindings to apps of the service instance in that space.
+
+* When the service instance is not shared, `This service is not currently shared` appears instead of `shared with spaces`.
+If you run the command while targeting the space where the service instance is shared, you see the originating space and organization.
+For example:
+```
+$ cf service mydb
+name: mydb
+shared from org/space: acceptance / dev
+service: p-mysql
+tags:
+plan: 100mb
+description: mysql databases on demand been created by a platform.
+documentation:
+dashboard:
+service broker: mysql-broker
+Showing status of last operation from service my-service-3...
+status: create succeeded
+message: Operation succeeded
+started: 2021-03-01T15:10:15Z
+updated: 2021-03-01T15:10:17Z
+bound apps:
+name binding name status message
+my-library-app create succeeded Operation succeeded
+No upgrade available for this service.
+```
+In this case, no information about other spaces is exposed.
+
+## Unsharing a service instance
+
+**Caution**
+Unsharing a service instance deletes all bindings to apps in the spaces it was shared into. This might cause apps to fail. Before unsharing a service instance, run the `cf service SERVICE-INSTANCE` command to find out how many bindings exist in the spaces the service instance is shared into.
+You can unshare a service instance if you have the Space Developer role in the
+space where this service instance was shared from.
+Developers cannot delete or rename a service instance until it is unshared from all
+spaces.
+To unshare a service instance, run the following cf CLI command:
+```
+$ cf unshare-service SERVICE-INSTANCE -s OTHER-SPACE [-o OTHER-ORG] [-f]
+```
+The `-f` flag (optional) forces unsharing without confirmation.
+
+## Security considerations
+
+* [Service keys](https://docs.cloudfoundry.org/devguide/services/service-keys.html) cannot be created from a space that a
+service instance is shared into. This ensures that developers in the space where a service instance is
+shared from have visibility into where and how many times the service instance is used.
+
+* Sharing service instances does not update app security groups (ASGs).
+The network policies defined in your ASGs might need to be updated to ensure that apps using shared service instances can access the underlying service.
+
+* Access to a service must be activated using the `cf enable-service-access` command for a service instance to be shared into a space.
+
+* Not all services are activated for sharing the instances capability.
+Contact the service vendor directly if you are unable to share instances of their service.
+If you are a service author, see [Enabling service instance sharing](https://docs.cloudfoundry.org/services/enable-sharing.html).
+
+## Deactivating service instance sharing in Cloud Foundry
+To deactivate service instance sharing, run:
+```
+$ cf disable-feature-flag service_instance_sharing
+```
+This only prevents new shares from being created. To remove existing shares, see [Deleting all shares](https://docs.cloudfoundry.org/devguide/services/sharing-instances.html#deleting).
+
+## Deleting all shares
+The following script finds all service instances that are shared, and for each
+space that the service instance is shared into, all service bindings to that service instance are deleted, and all shares are deleted.
+If a service binding is not deleted, the script continues trying to unshare subsequent service instances.
+To use this script, you must be logged in as an administrator and have jq installed.
+
+**Caution**
+This script was tested on macOS Sierra 10.12.4 and Ubuntu 14.04.5. Use the script at your own risk.
+```
+
+#!/usr/bin/env bash
+set -u
+set -e
+
+# refresh auth token
+cf oauth-token >/dev/null
+for instance_guid in $(cf curl /v3/service_instances | jq -r '.resources[].guid'); do
+for space_guid in $(cf curl /v2/service_instances/$instance\_guid/shared_to | jq -r
+'.resources[].space\_guid'); do
+echo "Unsharing service instance $instance\_guid from space $space\_guid"
+set +e
+cf curl -X DELETE "/v3/service\_instances/$instance\_guid/relationships/shared\_spaces/$space\_guid"
+set -e
+done
+done
+```

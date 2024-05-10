@@ -1,0 +1,89 @@
+# Using feature flags with Cloud Foundry
+With Cloud Foundry, you can set feature flags by using the cf CLI to activate or deactivate the features available to users.
+
+## View and edit feature flags
+To perform the following procedures, you must be logged in to your deployment as an admin using the Cloud Foundry Command Line Interface (cf CLI).
+To view and edit feature flags:
+
+1. Use the `cf feature-flags` command to list the feature flags:
+```
+$ cf feature-flags
+Features State
+user_org_creation disabled
+private_domain_creation enabled
+app_bits_upload enabled
+app_scaling enabled
+route_creation enabled
+service_instance_creation enabled
+diego_docker disabled
+set_roles_by_username enabled
+unset_roles_by_username enabled
+task_creation enabled
+env_var_visibility enabled
+space_scoped_private_broker_creation enabled
+space_developer_env_var_visibility enabled
+service_instance_sharing disabled
+hide_marketplace_from_unauthenticated_users disabled
+resource_matching enabled
+```
+For descriptions of the features enabled by each feature flag, see [Feature Flags](https://docs.cloudfoundry.org/adminguide/listing-feature-flags.html#flags).
+
+2. To view the status of a feature flag, run:
+```
+cf feature-flag FEATURE-FLAG-NAME
+```
+Where `FEATURE-FLAG-NAME` is the name of the feature flag you want to view.
+
+3. To enable a feature flag, run:
+```
+cf enable-feature-flag FEATURE-FLAG-NAME
+```
+Where `FEATURE-FLAG-NAME` is the name of the feature flag you want to activate.
+
+4. To deactivate a feature flag, run:
+```
+cf disable-feature-flag FEATURE-FLAG-NAME
+```
+Where `FEATURE-FLAG-NAME` is the name of the feature flag you want to deactivate.
+
+## Feature flags
+Only admins can set feature flags. All flags are activated by default except `user_org_creation` and `diego_docker`. When deactivated, these features are only available to admins.
+The following list provides descriptions of the features enabled or deactivate by each flag, and the minimum Cloud Controller API (CC API) version necessary to use the feature. To determine your Cloud Controller API version, see [Identifying your Cloud Foundry API Endpoint and Version](http://docs.cloudfoundry.org/running/cf-api-endpoint.html).:
+
+* `user_org_creation`: Any user can create an org. Minimum CC API version: 2.12.
+
+* `private_domain_creation`: An Org Manager can create private domains for that org. Minimum CC API version: 2.12.
+
+* `app_bits_upload`: Space Developers can upload app bits. Minimum CC API version: 2.12.
+
+* `app_scaling`: Space Developers can perform scaling operations such as changing memory, disk, or instances. Minimum CC API version: 2.12.
+
+* `route_creation`: Space Developers can create routes in a space. Minimum CC API version: 2.12.
+
+* `route_sharing`: Space Developers can share routes between two spaces (including across orgs) in which they have the Space Developer role. When deactivated, Space Developers cannot share routes between two spaces. Minimum CC API version: 3.117.
+
+* `service_instance_creation`: Space Developers can create service instances in a space. Minimum CC API version: 2.12.
+
+* `diego_docker`: Space Developers can push Docker apps. Minimum CC API version 2.33.
+
+* `set_roles_by_username`: Org Managers and Space Managers can add roles by username. Minimum CC API version: 2.37.
+
+* `unset_roles_by_username`: Org Managers and Space Managers can remove roles by username. Minimum CC API version: 2.37.
+
+* `task_creation`: Space Developers can create tasks on their app. Minimum CC API version: 2.47.
+
+* `env_var_visibility`: Admins can view environment variables. Minimum CC API version: 2.58.
+
+* `space_scoped_private_broker_creation`: Space Developers can create space-scoped private service brokers. Minimum CC API version: 2.58.
+
+* `space_developer_env_var_visibility`: Space Developers can view their v2 environment variables. Space Developers and Space Supporters can view their v3 environment variables. Minimum CC API version: 2.58.
+
+* `service_instance_sharing`: Space Developers can share service instances between two spaces (across orgs) in which they have the Space Developer role.
+
+* `hide_marketplace_from_unauthenticated_users`: Do not allow unauthenticated users to see the service offerings available in the marketplace.
+
+* `resource_matching`: Allow the package upload endpoint to cache uploaded packages for resource matching. When deactivated, the resource match endpoint always returns an empty array of matches. Minimum CC API version: 3.77.
+For more information about feature flag commands, see [Feature Flags](http://v3-apidocs.cloudfoundry.org/version/3.76.0/index.html#feature-flags) in the Cloud Foundry API documentation.
+
+## Deactivate custom buildpacks
+You can disable custom buildpacks for an entire deployment by adding `disable_custom_buildpacks: true` in your Cloud Foundry manifest under `properties.cc`.
