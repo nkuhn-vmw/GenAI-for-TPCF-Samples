@@ -7,8 +7,6 @@ applications:
     WEBUI_SECRET_KEY: "12324324432"
   instances: 1
   memory: 1G
-  routes:
-  - route: openweb-ui.apps.tilt-2052363.cf-app.com
   services:
   - llm-service
   stack: cflinuxfs4
