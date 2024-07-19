@@ -1,6 +1,7 @@
 applications:
 - name: openweb-ui
   disk_quota: 6G
+  random-route: true
   env:
     WEBUI_AUTH: "False"
     ENABLE_SIGNUP: "False"
