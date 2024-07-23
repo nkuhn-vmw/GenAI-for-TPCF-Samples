@@ -1,5 +1,8 @@
 # Gradio Chat
 
+Please note: This Application has been updated to work with the GenAI for TPCF tile versions 0.4.0 and higher.
+You will need to update  INPUT_MODEL on the manifest.yml file to match a model you have deployed on the GenAI tile.
+
 This is a simple python sample application to be used in Cloud Foundry and Tanzu Application Service.
 
 It makes use of the new GenAI for TAS tile to offer a simple chat style application.

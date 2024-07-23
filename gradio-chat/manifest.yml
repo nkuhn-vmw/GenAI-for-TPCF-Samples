@@ -2,7 +2,9 @@ applications:
 - name: gradio-chat
   memory: 1G
   buildpack: python_buildpack
+  env:
+    INPUT_MODEL: phi3
   services:
-    - gradio-chat-genai-service
+    - shared-genai-plan
 #Create a GenAI for TAS Service for this app to function
 #Create service(s) ahead of time with either the cf cli or Apps Manager

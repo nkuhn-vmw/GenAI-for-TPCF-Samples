@@ -10,7 +10,8 @@ env = AppEnv()
 env.name  # 'test-app'
 env.port  # 5000
 
-llm = env.get_service(label='genai-service')
+#source genai service
+llm = env.get_service(label='genai')
 
 http_client = httpx.Client(
     verify = False
@@ -26,7 +27,7 @@ openai_client = OpenAI(
 prompt = "Enter Your Query Here"
 def api_calling(prompt):
     completions = openai_client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model=os.environ["INPUT_MODEL"],
          messages=[{"role": "user", "content": prompt}],
         max_tokens=1024,
         n=1,
