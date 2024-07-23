@@ -1,5 +1,9 @@
 # Tanzu GPT: Python Edition
 
+**Please note: This Application has been updated to work with the GenAI for TPCF tile versions 0.4.0 and higher.**
+**You will need to update  INPUT_MODEL on the manifest.yml file to match a model you have deployed on the GenAI tile.**
+**This assumes you are using ollama as a model provider**
+
 This is a simple python sample application to be used in Cloud Foundry and Tanzu Application Service. It makes use of the new GenAI for TAS tile as well as the Tanzu Postgres tile to offer chatbot style workflows with full pgvector embedding support.
 
 In order to get started with this application, query your Tanzu Application Service marketplace:

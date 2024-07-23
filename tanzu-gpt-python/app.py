@@ -26,7 +26,7 @@ from cfenv import AppEnv
 
 env = AppEnv()
 pg = env.get_service(label='postgres')
-llm = env.get_service(label='genai-service')
+llm = env.get_service(label='genai')
 chunk_size = 500
 chunk_overlap = 50
 database_name = pg.credentials['db']
@@ -48,6 +48,10 @@ connection_string = PGVector.connection_string_from_db_params(
     user=username,
     password=password,
 )
+
+platform_certs = "/etc/ssl/certs/ca-certificates.crt"
+os.environ["REQUESTS_CA_BUNDLE"] = platform_certs
+os.environ["SSL_CERT_FILE"] = platform_certs
 
 ### Define application functions
 
@@ -80,14 +84,14 @@ def read_and_textify(file):
     file_extension = get_file_extension(tmp_file_path)
     metadata = {"source": file.name}
     if file_extension == ".csv":
-        loader = CSVLoader(file_path=tmp_file_path, encoding="utf-8", csv_args={
+        loader = CSVLoader(file_path=tmp_file_path, csv_args={
             'delimiter': ',', })
         data = loader.load()
     elif file_extension == ".pdf":
         loader = PyPDFLoader(file_path=tmp_file_path)
         data = loader.load_and_split(text_splitter)
     elif file_extension == ".txt":
-        loader = TextLoader(file_path=tmp_file_path, encoding="utf-8")
+        loader = TextLoader(file_path=tmp_file_path)
         data = loader.load_and_split(text_splitter)
 
     for doc in data:
@@ -100,7 +104,7 @@ async def create_embeddings_async(documents):
         class AsyncOpenAIEmbeddings(OpenAIEmbeddings):
             async def _embed(self, text: str, *, engine: str):
                 response = await client.post(
-                    f"{self.openai_api_base}/v1/embeddings",
+                    f"{self.openai_api_base}/api/embeddings",
                     headers={"Authorization": f"Bearer {self.openai_api_key}"},
                     json={
                         "input": text,
@@ -110,7 +114,7 @@ async def create_embeddings_async(documents):
                 response.raise_for_status()
                 return response.json()["data"][0]["embedding"]
 
-        embeddings = AsyncOpenAIEmbeddings(model="text-embedding-ada-002", openai_api_key=api_key, openai_api_base=api_base)
+        embeddings = AsyncOpenAIEmbeddings(model=os.environ["EMBEDDING_MODEL"], openai_api_key=api_key, openai_api_base=api_base)
         PGVector.from_documents(documents, embeddings, 
                                 collection_name=collection_name,
                                 connection_string=connection_string,
@@ -135,7 +139,7 @@ async def create_retriever_async():
         class AsyncOpenAIEmbeddings(OpenAIEmbeddings):
             async def _embed(self, text: str, *, engine: str):
                 response = await client.post(
-                    f"{self.openai_api_base}/v1/embeddings",
+                    f"{self.openai_api_base}/api/embeddings",
                     headers={"Authorization": f"Bearer {self.openai_api_key}"},
                     json={
                         "input": text,
@@ -145,7 +149,7 @@ async def create_retriever_async():
                 response.raise_for_status()
                 return response.json()["data"][0]["embedding"]
 
-        embeddings = AsyncOpenAIEmbeddings(model="text-embedding-ada-002", openai_api_key=api_key, openai_api_base=api_base)
+        embeddings = AsyncOpenAIEmbeddings(model=os.environ["EMBEDDING_MODEL"], openai_api_key=api_key, openai_api_base=api_base)
         vStore = PGVector(
             collection_name=collection_name,
             connection_string=connection_string,
@@ -178,7 +182,7 @@ setup_database()
 retriever = create_retriever()
 
 # Initialize the language model
-llm = ChatOpenAI(model_name="gpt-3.5-turbo", openai_api_key=api_key, openai_api_base=api_base, streaming=True)
+llm = ChatOpenAI(model_name=os.environ["INFERENCE_MODEL"], openai_api_key=api_key, openai_api_base=api_base, streaming=True)
 
 # Define the prompt templates
 qa_template = """
