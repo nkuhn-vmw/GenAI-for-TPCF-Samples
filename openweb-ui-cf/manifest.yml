@@ -6,8 +6,9 @@ applications:
     WEBUI_AUTH: "False"
     ENABLE_SIGNUP: "False"
     WEBUI_SECRET_KEY: "12324324432"
+    WEBUI_NAME: Tanzu Platform
   instances: 1
   memory: 1G
   services:
-  - llm-service
+  - llama3
   stack: cflinuxfs4
