@@ -6,6 +6,48 @@ This version of Spring Music has been modified with [Spring AI](https://github.c
 You can create and bind these services after the inital `cf push` and see a behavior change with the application after restaging has been completed.
 
 
+## Breaking Changes
+
+You must have a Postgres binding to launch this app (or running postgres on localhost, see the `pgvector` directory for a docker-compose to do this.  H2 Database currently does not work due to vector store initialization race issues.
+
+## Installation
+
+#### Preperations
+Update the following in ```demo.sh``` according to your TPCF configurations
+
+```bash
+PGVECTOR_SERVICE_NAME="vector-db"
+PGVECTOR_PLAN_NAME="on-demand-postgres-db"
+
+GENAI_CHAT_SERVICE_NAME="genai-chat" # must be identical to runtime-configs/tpcf/manifest.yaml
+GENAI_CHAT_PLAN_NAME="meta-llama/Meta-Llama-3-8B-Instruct" # plan must have chat capabilty
+
+GENAI_EMBEDDINGS_SERVICE_NAME="genai-embed" # must be identical to runtime-configs/tpcf/manifest.yaml
+GENAI_EMBEDDINGS_PLAN_NAME="nomic-embed-text" # plan must have Embeddings capabilty
+```
+
+#### Build
+
+```bash
+gradle assemble
+```
+#### Deployment
+Run the demo script to create all services and push the spring-metal application
+
+```bash
+cf login -u admin -p YOUR_CF_ADMIN_PASSWORD
+cf target -o YOUR_ORG -s YOUR_SPACE
+
+./demo.sh cf
+```
+
+#### Cleanup
+This will delete the service instances and app.
+```bash
+./demo.sh cleanup
+```
+
+
 
 See orignial readme below:
 ============

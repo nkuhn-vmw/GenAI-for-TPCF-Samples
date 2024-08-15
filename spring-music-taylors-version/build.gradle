@@ -1,6 +1,6 @@
 plugins {
-    id 'org.springframework.boot' version '3.1.2'
-    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id 'org.springframework.boot' version '3.3.2'
+    id 'io.spring.dependency-management' version '1.1.6'
     id 'java'
     id 'eclipse-wtp'
     id 'idea'
@@ -11,10 +11,11 @@ repositories {
     mavenLocal()
     maven { url 'https://repo.spring.io/milestone' }
     maven { url 'https://repo.spring.io/snapshot' }
+    maven { url 'file:{project.basedir}/local-maven-repo' }
 }
 
 ext {
-    javaCfEnvVersion = '3.0.0'
+    javaCfEnvVersion = '3.1.6-SNAPSHOT'
 }
 
 dependencies {
@@ -26,12 +27,15 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-data-redis"
     implementation "org.springframework.boot:spring-boot-starter-validation"
 
-    implementation "org.springframework.experimental.ai:spring-ai-openai-spring-boot-starter:0.7.0-SNAPSHOT"
-    implementation "org.springframework.experimental.ai:spring-ai-pgvector-store:0.7.0-SNAPSHOT"
+    implementation "org.springframework.ai:spring-ai-openai-spring-boot-starter:1.0.0-SNAPSHOT"
+    implementation "org.springframework.ai:spring-ai-pgvector-store-spring-boot-starter:1.0.0-SNAPSHOT"
 
     // Java CfEnv
-    implementation "io.pivotal.cfenv:java-cfenv-boot:${javaCfEnvVersion}"
+    implementation "io.pivotal.cfenv:java-cfenv-all:${javaCfEnvVersion}"
 
+    // Kubernetes bindings
+    implementation "org.springframework.cloud:spring-cloud-bindings:2.0.3"
+    
     // JPA Persistence
     runtimeOnly "org.apache.commons:commons-pool2"
     runtimeOnly "com.h2database:h2"

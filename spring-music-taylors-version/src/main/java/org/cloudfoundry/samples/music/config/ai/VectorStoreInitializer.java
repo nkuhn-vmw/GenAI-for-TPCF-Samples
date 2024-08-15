@@ -16,39 +16,69 @@
 
 package org.cloudfoundry.samples.music.config.ai;
 
-import java.util.List;
-
 import org.cloudfoundry.samples.music.web.AIController;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+
 import org.springframework.ai.document.Document;
-import org.springframework.ai.reader.JsonReader;
 import org.springframework.ai.vectorstore.VectorStore;
-import org.springframework.beans.factory.annotation.Value;
+
+import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.core.io.Resource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.cloudfoundry.samples.music.domain.Album;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.CrudRepository;
+
+import org.springframework.core.annotation.Order;
+
 
 /**
  *
  * @author Christian Tzolov
+ * @author Stuart Charlton
+ * @author Adib Saikali
  */
+ @Order(2)
 public class VectorStoreInitializer implements ApplicationListener<ApplicationReadyEvent> {
 
-	private VectorStore vectorStore;
-	@Value("classpath:/albums.json")
-	private Resource albumsResource;
+    private static final Logger logger = LoggerFactory.getLogger(VectorStoreInitializer.class);
 
-	public VectorStoreInitializer(VectorStore vectorStore) {
-		this.vectorStore = vectorStore;
-	}
+    private VectorStore vectorStore;
 
-	@Override
-	public void onApplicationEvent(ApplicationReadyEvent event) {
-		JsonReader jsonLoader = new JsonReader(this.albumsResource,
-				"artist", "title", "releaseYear", "genre", "userReview", "userScore");
-		List<Document> documents = jsonLoader.get();
-		this.vectorStore.add(documents);
-	}
+    private CrudRepository<Album, String> repository;
 
+    public VectorStoreInitializer(VectorStore vectorStore) {
+        this.vectorStore = vectorStore;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void onApplicationEvent(ApplicationReadyEvent event) {
+        this.repository =  BeanFactoryUtils.beanOfTypeIncludingAncestors(event.getApplicationContext(), CrudRepository.class);
+        Iterable<Album> albums = repository.findAll();
+        List<Document> documents = new ArrayList<>();
+
+
+        List<Document> docs = this.vectorStore.similaritySearch("album");
+        logger.info("Vector store contains " + docs.size() + " records");
+
+        if (docs.size() == 0) {
+            logger.info("Populating vector store");
+            for (Album album : albums) {
+
+                String albumDoc = AIController.generateVectorDoc(album);
+                documents.add(new Document(album.getId(), albumDoc, new HashMap<>()));
+
+            }
+            this.vectorStore.add(documents);
+        }
+    }
 }

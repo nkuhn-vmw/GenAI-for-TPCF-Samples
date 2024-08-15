@@ -11,8 +11,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.init.Jackson2ResourceReader;
 
+import org.springframework.core.annotation.Order;
+
 import java.util.Collection;
 
+@Order(1)
 public class AlbumRepositoryPopulator implements ApplicationListener<ApplicationReadyEvent> {
     private final Jackson2ResourceReader resourceReader;
     private final Resource sourceData;
@@ -26,6 +29,7 @@ public class AlbumRepositoryPopulator implements ApplicationListener<Application
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent event) {
+        @SuppressWarnings("rawtypes")
         CrudRepository albumRepository =
                 BeanFactoryUtils.beanOfTypeIncludingAncestors(event.getApplicationContext(), CrudRepository.class);
 
@@ -35,7 +39,7 @@ public class AlbumRepositoryPopulator implements ApplicationListener<Application
     }
 
     @SuppressWarnings("unchecked")
-    private void populate(CrudRepository repository) {
+    private void populate(@SuppressWarnings("rawtypes") CrudRepository repository) {
         Object entity = getEntityFromResource(sourceData);
 
         if (entity instanceof Collection) {

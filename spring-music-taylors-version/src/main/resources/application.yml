@@ -1,7 +1,11 @@
 spring:
   ai:
     openai:
-      api-key: "YOUR KEY"
+      api-key: "YOUR-KEY"
+    vectorstore:
+      pgvector: 
+        initialize-schema: true
+        remove-existing-vector-store-table: true
   jpa:
     generate-ddl: true
 
@@ -41,15 +45,12 @@ spring:
 
 ---
 spring:
-  config:
-    activate:
-      on-profile: postgres
   datasource:
-    url: "jdbc:postgresql://localhost/music"
+    url: "jdbc:postgresql://localhost:15432/music"
     driver-class-name: org.postgresql.Driver
     username: postgres
-    password:
+    password: password
   jpa:
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.ProgressDialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
