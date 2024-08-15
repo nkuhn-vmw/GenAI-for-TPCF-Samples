@@ -21,52 +21,60 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.ai.client.AiClient;
-import org.springframework.ai.client.AiResponse;
-import org.springframework.ai.client.Generation;
+import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
+import org.springframework.ai.chat.messages.Message;
+import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.chat.prompt.SystemPromptTemplate;
 import org.springframework.ai.document.Document;
-import org.springframework.ai.prompt.Prompt;
-import org.springframework.ai.prompt.SystemPromptTemplate;
-import org.springframework.ai.prompt.messages.Message;
-import org.springframework.ai.prompt.messages.UserMessage;
-import org.springframework.ai.retriever.VectorStoreRetriever;
+import org.springframework.ai.vectorstore.SearchRequest;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 
 /**
  *
  * @author Christian Tzolov
+ * @author Stuart Charlton
+ * @author Adib Saikali
  */
 public class MessageRetriever {
 
 	@Value("classpath:/prompts/system-qa.st")
 	private Resource systemPrompt;
-
-	private VectorStoreRetriever vectorStoreRetriever;
-
-	private AiClient aiClient;
+	private VectorStore vectorStore;
+	private ChatClient chatClient;
 
 	private static final Logger logger = LoggerFactory.getLogger(MessageRetriever.class);
 	
-	public MessageRetriever(VectorStoreRetriever vectorStoreRetriever, AiClient aiClient) {
-		this.vectorStoreRetriever = vectorStoreRetriever;
-		this.aiClient = aiClient;
+	
+	public MessageRetriever(VectorStore vectorStore, ChatModel chatModel) {
+		this.vectorStore = vectorStore;
+		this.chatClient = ChatClient.builder(chatModel).build();
 	}
 
-	public Generation retrieve(String message) {
-		List<Document> relatedDocuments = this.vectorStoreRetriever.retrieve(message);
+    public String retrieve(String message) {
 
+		return this.chatClient
+				.prompt()
+				.advisors(new QuestionAnswerAdvisor(this.vectorStore, SearchRequest.defaults()))
+				.user(message)
+				.call()
+				.content();
+
+		/* // hand rolled implementation
+		List<Document> relatedDocuments = this.vectorStore.similaritySearch(message);
 		logger.info("first doc retrieved " + relatedDocuments.get(0).toString());
 
 		Message systemMessage = getSystemMessage(relatedDocuments);
 		logger.info("system Message retrieved " + systemMessage.toString());
-		UserMessage userMessage = new UserMessage(message);
 
-		Prompt prompt = new Prompt(List.of(systemMessage, userMessage));
-
-		AiResponse response = aiClient.generate(prompt);
-
-		return response.getGeneration();
+		return this.chatClient.prompt()
+				.messages(systemMessage)
+				.user(message)
+				.call()
+				.content();
+		*/
 	}
 
 	private Message getSystemMessage(List<Document> relatedDocuments) {

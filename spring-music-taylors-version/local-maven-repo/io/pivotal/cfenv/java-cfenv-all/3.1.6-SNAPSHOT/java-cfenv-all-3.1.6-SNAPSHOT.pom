@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- This module was also published with a richer model, Gradle metadata,  -->
+  <!-- which should be used instead. Do not delete the following line which  -->
+  <!-- is to indicate to Gradle or any Gradle module metadata file consumer  -->
+  <!-- that they should prefer consuming it instead. -->
+  <!-- do_not_remove: published-with-gradle-metadata -->
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>io.pivotal.cfenv</groupId>
+  <artifactId>java-cfenv-all</artifactId>
+  <version>3.1.6-SNAPSHOT</version>
+  <name>java-cfenv-all, contains all java-cfenv modules in a convenient uberjar - to be used with CF Java Buildpack</name>
+  <description>java-cfenv-all, contains all java-cfenv modules in a convenient uberjar - to be used with CF Java Buildpack</description>
+  <url>https://github.com/pivotal-cf/java-cfenv/</url>
+  <organization>
+    <name>Pivotal Software, Inc.</name>
+    <url>https://www.spring.io</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <id>royclarkson</id>
+      <name>Roy Clarkson</name>
+      <email>rclarkson@pivotal.io</email>
+    </developer>
+    <developer>
+      <id>anthonydahanne</id>
+      <name>Anthony Dahanne</name>
+      <email>anthonyd2@vmware.com</email>
+    </developer>
+    <developer>
+      <id>pivotal-david-osullivan</id>
+      <name>David O'Sullivan</name>
+      <email>davidos@vmware.com</email>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/pivotal-cf/java-cfenv.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/pivotal-cf/java-cfenv.git</developerConnection>
+    <url>https://github.com/pivotal-cf/java-cfenv</url>
+  </scm>
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/pivotal-cf/java-cfenv/issues</url>
+  </issueManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot</artifactId>
+      <version>3.3.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.pivotal.cfenv</groupId>
+      <artifactId>java-cfenv-boot-pivotal-scs</artifactId>
+      <version>3.1.6-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.pivotal.cfenv</groupId>
+      <artifactId>java-cfenv-boot-pivotal-sso</artifactId>
+      <version>3.1.6-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+</project>

@@ -1,0 +1,166 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "io.pivotal.cfenv",
+    "module": "java-cfenv-all",
+    "version": "3.1.6-SNAPSHOT",
+    "attributes": {
+      "org.gradle.status": "integration"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.7"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "dependencies": [
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot",
+          "version": {
+            "requires": "3.3.2"
+          }
+        },
+        {
+          "group": "io.pivotal.cfenv",
+          "module": "java-cfenv-boot-pivotal-scs",
+          "version": {
+            "requires": "3.1.6-SNAPSHOT"
+          }
+        },
+        {
+          "group": "io.pivotal.cfenv",
+          "module": "java-cfenv-boot-pivotal-sso",
+          "version": {
+            "requires": "3.1.6-SNAPSHOT"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "java-cfenv-all-3.1.6-SNAPSHOT.jar",
+          "url": "java-cfenv-all-3.1.6-SNAPSHOT.jar",
+          "size": 692887,
+          "sha512": "a2894fb575d9d4c5aeb39cd68314cbe7161a4d20ac410a3839f8481a3f9f69c8a3b2e5c45d8e80441112e89dd68b7ea413d650f8b84347765c392d59596edcc4",
+          "sha256": "d0894408953089218fce3c699689a651a8857e28f93b6d6763f41422077ddbac",
+          "sha1": "647c588e51d7a720fefdc204aaf533fb854e50b0",
+          "md5": "88c81b01a39731817597879ec162bfe4"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot",
+          "version": {
+            "requires": "3.3.2"
+          }
+        },
+        {
+          "group": "io.pivotal.cfenv",
+          "module": "java-cfenv-boot-pivotal-scs",
+          "version": {
+            "requires": "3.1.6-SNAPSHOT"
+          }
+        },
+        {
+          "group": "io.pivotal.cfenv",
+          "module": "java-cfenv-boot-pivotal-sso",
+          "version": {
+            "requires": "3.1.6-SNAPSHOT"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "java-cfenv-all-3.1.6-SNAPSHOT.jar",
+          "url": "java-cfenv-all-3.1.6-SNAPSHOT.jar",
+          "size": 692887,
+          "sha512": "a2894fb575d9d4c5aeb39cd68314cbe7161a4d20ac410a3839f8481a3f9f69c8a3b2e5c45d8e80441112e89dd68b7ea413d650f8b84347765c392d59596edcc4",
+          "sha256": "d0894408953089218fce3c699689a651a8857e28f93b6d6763f41422077ddbac",
+          "sha1": "647c588e51d7a720fefdc204aaf533fb854e50b0",
+          "md5": "88c81b01a39731817597879ec162bfe4"
+        }
+      ]
+    },
+    {
+      "name": "javadocElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "javadoc",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "java-cfenv-all-3.1.6-SNAPSHOT-javadoc.jar",
+          "url": "java-cfenv-all-3.1.6-SNAPSHOT-javadoc.jar",
+          "size": 90016,
+          "sha512": "cac91a55e9f5d82700bd97b29bbf6a4a6b7191465228aee70c6c80a4cc59d36f3ef884a1910b2c884cb72af3f184a0fabf46c2849a912d5c5f25d4693b59e173",
+          "sha256": "5b8f99c1ea68f99e41b28d43930c0ded862a8b0a63e2a2ffc2deebe8ea8fcca5",
+          "sha1": "83edaa5d5afa174d36a127179ddbd8332f0912b1",
+          "md5": "e38ee8ff625fa07a7b8ab5eaa1067ff7"
+        }
+      ]
+    },
+    {
+      "name": "sourcesElements",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "java-cfenv-all-3.1.6-SNAPSHOT-sources.jar",
+          "url": "java-cfenv-all-3.1.6-SNAPSHOT-sources.jar",
+          "size": 4437,
+          "sha512": "d99bf5dcf3af6f0ae6df3234598b77a08f4db9baf1db8e189cf981e29a1aa2b39847c408567dcaffa6cdda468fdd56c3371ee01746a099097d6f7eae948b6877",
+          "sha256": "91e0d6e9a9990cd55f519e40c7086383e052d84ef519610c602ae12ac213e849",
+          "sha1": "c512117161e7b04713da382abf4a3f8afd493ccf",
+          "md5": "2ae253f34fafd67c8269af662bc8f2ea"
+        }
+      ]
+    },
+    {
+      "name": "shadowRuntimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "shadowed",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "java-cfenv-all-3.1.6-SNAPSHOT.jar",
+          "url": "java-cfenv-all-3.1.6-SNAPSHOT.jar",
+          "size": 692887,
+          "sha512": "a2894fb575d9d4c5aeb39cd68314cbe7161a4d20ac410a3839f8481a3f9f69c8a3b2e5c45d8e80441112e89dd68b7ea413d650f8b84347765c392d59596edcc4",
+          "sha256": "d0894408953089218fce3c699689a651a8857e28f93b6d6763f41422077ddbac",
+          "sha1": "647c588e51d7a720fefdc204aaf533fb854e50b0",
+          "md5": "88c81b01a39731817597879ec162bfe4"
+        }
+      ]
+    }
+  ]
+}
