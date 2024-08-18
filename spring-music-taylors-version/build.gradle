@@ -11,11 +11,10 @@ repositories {
     mavenLocal()
     maven { url 'https://repo.spring.io/milestone' }
     maven { url 'https://repo.spring.io/snapshot' }
-    maven { url 'file:{project.basedir}/local-maven-repo' }
 }
 
 ext {
-    javaCfEnvVersion = '3.1.6-SNAPSHOT'
+    javaCfEnvVersion = '3.2.0'
 }
 
 dependencies {
