@@ -6,10 +6,10 @@ This repo is designed to hold applications written to demo the new GenAI for TPC
 
 See example Applications below:
 
-1. [Gradio Chat](https://github.com/nkuhn-vmw/GenAI-for-TAS-Samples/tree/main/gradio-chat) This is the sample chat application from fastchat modified to use GenAI for TAS as the backend LLM.
+1. [Gradio Chat](https://github.com/nkuhn-vmw/GenAI-for-TPCF-Samples/tree/main/gradio-chat) This is the sample chat application from fastchat modified to use GenAI for TAS as the backend LLM.
 
-2. [Spring Music (Taylor's Version)](https://github.com/nkuhn-vmw/GenAI-for-TAS-Samples/tree/main/spring-music-taylors-version) A modifed version of the classic "Spring Music" Cloud Foundry application infused with magic from the new [Spring AI project](https://github.com/spring-projects/spring-ai). This app will add a "Spring Music Assistant" when the GenAI for TAS service is bound to this application.
+2. [Spring Metal)](https://github.com/nkuhn-vmw/GenAI-for-TPCF-Samples/tree/main/spring-metaln) A modifed version of the classic "Spring Music" Cloud Foundry application infused with magic from the new [Spring AI project](https://github.com/spring-projects/spring-ai). This app will add a "Spring Music Assistant" when the GenAI for TAS service is bound to this application.
 
-3. [Tanzu GPT Python Edition](https://github.com/nkuhn-vmw/GenAI-for-TAS-Samples/tree/main/tanzu-gpt-python) Based on the orginal application used at the VMware Explore hackathon -- this python application can be configured to use the GenAI for TAS tile and Tanzu Postgres tile to have a "chat-gpt" style applications that can be enhanced with pgvector embeddings. 
+3. [openweb-ui-cf](https://github.com/nkuhn-vmw/GenAI-for-TPCF-Samples/tree/main/openweb-ui-cf) The ever popular openweb ui frontend with TPCF deployment options and examples for GenAI for TPCF.
 
 
