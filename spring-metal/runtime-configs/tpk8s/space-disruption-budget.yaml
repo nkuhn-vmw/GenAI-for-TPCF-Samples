@@ -1,0 +1,9 @@
+   apiVersion: spaces.tanzu.vmware.com/v1alpha1
+   kind: SpaceDisruptionBudget
+   metadata:
+     name: my-first-space
+   namespace: default
+   spec:
+     availabilityTargets:
+     - minAvailable: 1
+       name: all-regions.tanzu.vmware.com

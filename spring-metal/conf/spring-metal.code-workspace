@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../openso-notes"
+		},
+		{
+			"path": "../tanzu-build-samples"
+		},
+		{
+			"path": "../application-accelerator-samples"
+		}
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "interactive",
+		"java.compile.nullAnalysis.mode": "automatic"
+	}
+}

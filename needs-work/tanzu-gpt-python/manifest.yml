@@ -1,0 +1,14 @@
+applications:
+- name: tanzu-gpt-python
+  memory: 1G
+  buildpack: python_buildpack
+  env:
+    INFERENCE_MODEL: llama3.1
+    EMBEDDING_MODEL: bge-large
+  services:
+    - llama3.1
+    - bge-large
+    - tanzu-gpt-postgres
+#Create a Tanzu Postgres databse and GenAI for TAS Service for this app to function
+#Create services ahead of time with either the cf cli or Apps Manager
+#Make sure to use the proper service names based on your deployment

@@ -1,0 +1,62 @@
+spring:
+  ai:
+    vectorstore:
+      pgvector: 
+        initialize-schema: true
+        remove-existing-vector-store-table: true
+    openai:
+      api-key: "YOUR-KEY"
+  jpa:
+    generate-ddl: true
+---
+logging:
+  level:
+    root: INFO
+---
+spring:
+  config:
+    activate:
+      on-profile: http2
+
+server:
+  http2:
+    enabled: true
+  port: 8443
+  #ssl:
+  #  enabled: true
+  #  key-alias: demo
+  #  key-store: classpath:keystore.bks
+  #  key-store-password: changeit
+  #  key-password: changeit
+  #  key-store-type: "BCFKS"
+    
+---
+spring:
+  config:
+    activate:
+      on-profile: mysql
+  datasource:
+    url: "jdbc:mysql://localhost/music"
+    driver-class-name: com.mysql.jdbc.Driver
+    username:
+    password:
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL55Dialect
+
+---
+spring:
+  datasource:
+    url: "jdbc:postgresql://localhost:15432/music"
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: password
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+#tanzu:
+#  governance:
+#    fips:
+#      exit-on-failure: true

@@ -1,0 +1,24 @@
+apiVersion: spaces.tanzu.vmware.com/v1alpha1
+kind: Trait
+metadata:
+  name: egress #Unique Name of the Trait
+spec:
+  description: Egress allows developers and operators to connect to services outside of the space. Egress gateways work alongside Service Bindings, which provide the necessary credentials for communication with the services listed in an egress route.
+  carvelPackages:
+    - alias: egress.tanzu.vmware.com
+      refName: egress.tanzu.vmware.com
+      versionSelection:
+        constraints: 0.0.2  #For Beta 2, current latest version is 0.0.2. Ensure to keep it updated.
+      values:
+        inline:
+          open: false  #Open/Restricted Egress Policy mode
+#         hosts:
+#           - name: <hostName>  #Unique Name of the Host
+#             host: <hostValue>  #The host value is the domain name of the service to be accessed
+#             ports:
+#               - number: 443  #Port Number
+#                 name: https  #Name of the Port
+#                 protocol: HTTPS  #Protocol Type(HTTP/HTTPS/TCP)
+#               - number: 80
+#                 name: http
+#                 protocol: HTTP

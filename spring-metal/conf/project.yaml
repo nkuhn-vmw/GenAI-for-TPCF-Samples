@@ -1,0 +1,4 @@
+apiVersion: ucp.tanzu.vmware.com/v1
+kind: Project
+metadata:
+  name: openso-demo-project

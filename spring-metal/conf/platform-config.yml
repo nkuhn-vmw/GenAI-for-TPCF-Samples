@@ -1,0 +1,33 @@
+apiVersion: build.tanzu.vmware.com/v1
+kind: ContainerAppBuildPlan
+metadata:
+  name: platform-config
+spec:
+  registry: harbor.vmtanzu.com/openso-tap-apps
+  buildpacks:
+    builder: "paketobuildpacks/builder-jammy-base"
+  postBuildSteps:
+  - name: apply-spring-boot-conventions
+    namedTask: tanzu-spring-boot
+  runtimes:
+  - name: kubernetes-carvel-package
+    description: create a carvel package for deploying on kubernetes
+    steps:
+    - namedtask: tanzu-kubernetes-deployment
+    - namedtask: tanzu-kubernetes-carvel-package
+
+---
+#  runtimes:
+#  - name: kubernetes-plain
+#    steps:
+#    - name: kubernetes-deployment
+#      namedTask: tanzu-kubernetes-deployment
+#  - name: kubernetes-carvel-package
+#    description: create a carvel package for deploying on kubernetes
+#    steps:
+#    - namedtask: tanzu-kubernetes-deployment
+#    - namedtask: tanzu-kubernetes-carvel-package
+#  - name: container-image
+#    description: write image to file for use with container runtime (i.e docker run)
+#    steps:
+#    - namedtask: tanzu-container-image

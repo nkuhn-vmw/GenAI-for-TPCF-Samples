@@ -1,0 +1,56 @@
+#body {
+    padding-top: 10px;
+}
+
+.navbar {
+    background-color: white;
+    border: 0;
+    margin-bottom: 20px;
+}
+
+.navbar .container {
+    background-color: #FF8FAB;
+}
+
+.navbar .navbar-brand {
+    color: white;
+    padding: 10px 15px;
+    font-size: 25px;
+}
+
+.nav .instance-num {
+    color: white;
+    padding: 10px 15px;
+    font-size: 25px;
+}
+
+.navbar .navbar-brand:hover {
+    color: white;
+}
+
+.btn {
+    background-color: white;
+}
+
+.icon-white {
+    color: white;
+}
+
+.page-header {
+    font-size: 20px;
+}
+
+h1 {
+    font-size: 20px;
+}
+
+a {
+ color: #FB6F92;
+}
+
+.alert-success {
+    background-color: #FFEBF0;
+    color: #FB6F92;
+    border-color: #FB6F92;
+}
+

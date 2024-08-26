@@ -1,0 +1,13 @@
+apiVersion: spaces.tanzu.vmware.com/v1alpha1
+kind: AvailabilityTarget
+metadata:
+  name: av-target-1
+spec:
+  affinity:
+    clusterAffinity:
+      clusterSelectorTerms:
+        - matchExpressions:
+            - key: topology.kubernetes.io/region
+              operator: In
+              values: 
+                - <cluster-region>

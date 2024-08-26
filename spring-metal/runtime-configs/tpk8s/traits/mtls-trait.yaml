@@ -1,0 +1,14 @@
+apiVersion: spaces.tanzu.vmware.com/v1alpha1
+kind: Trait
+metadata:
+  name: mtls.tanzu.vmware.com
+spec:
+  description: MTLS ensure data protection (security, encryption, Compliance) to in-flight traffic within a cluster as part of space.
+  carvelPackages:
+    - alias: mtls.tanzu.vmware.com
+      refName: mtls.tanzu.vmware.com
+      versionSelection:
+        constraints: 2.0.1 #For Beta 2, the version of the mtls.tanzu.vmware.com package is 2.0.1. Ensure to keep the version updated.
+      values:
+        inline:
+          mtlsEnabled: false #false -> PERMISSIVE, true -> STRICT. default is false

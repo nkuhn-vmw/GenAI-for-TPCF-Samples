@@ -1,0 +1,15 @@
+apiVersion: spaces.tanzu.vmware.com/v1alpha1
+kind: Space
+metadata:
+ name: spring-metal-space
+spec:
+ template:
+   spec:
+     profiles:
+     - name: spring-ai
+ availabilityTargets:
+ - name: eu-availibility-target
+ - name: us-availibility-target
+   replicas: 1
+ updateStrategy:
+   type: RollingUpdate

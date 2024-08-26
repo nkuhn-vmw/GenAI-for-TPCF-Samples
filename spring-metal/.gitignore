@@ -1,0 +1,42 @@
+# Operating System Files
+
+*.DS_Store
+Thumbs.db
+*~
+.#*
+#*
+*#
+
+# tanzu files #
+.tanzu
+.build-output
+
+# Build Files #
+
+bin
+target
+build/
+.gradle
+.mvn
+
+# Eclipse Project Files #
+
+.classpath
+.project
+.settings
+
+# IDEA Files #
+
+*.iml
+*.ipr
+*.iws
+*.idea
+.vscode
+
+# Spring Bootstrap artifacts
+
+dependency-reduced-pom.xml
+
+mem*.db
+
+README.html

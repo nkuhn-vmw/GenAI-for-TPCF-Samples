@@ -1,0 +1,34 @@
+apiVersion: services.tanzu.vmware.com/v1
+kind: ServiceBinding
+metadata:
+  name: genai-chat-CHANGE_ME
+  namespace: default
+spec:
+  alias: ai-chat
+  serviceRef:
+    apiGroup: services.tanzu.vmware.com
+    connectorName: main
+    kind: PreProvisionedService
+    name: genai-chat
+  targetRef:
+    apiGroup: apps.tanzu.vmware.com
+    kind: ContainerApp
+    name: CHANGE_ME
+
+---
+apiVersion: services.tanzu.vmware.com/v1
+kind: ServiceBinding
+metadata:
+  name: genai-embed-CHANGE_ME
+  namespace: default
+spec:
+  alias: ai-embed
+  serviceRef:
+    apiGroup: services.tanzu.vmware.com
+    connectorName: main
+    kind: PreProvisionedService
+    name: genai-embed
+  targetRef:
+    apiGroup: apps.tanzu.vmware.com
+    kind: ContainerApp
+    name: CHANGE_ME

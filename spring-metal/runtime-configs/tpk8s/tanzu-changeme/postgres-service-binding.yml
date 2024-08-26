@@ -1,0 +1,16 @@
+apiVersion: services.tanzu.vmware.com/v1
+kind: ServiceBinding
+metadata:
+  name: pgvector-CHANGE_ME
+  namespace: default
+spec:
+  alias: db
+  serviceRef:
+    apiGroup: services.tanzu.vmware.com
+    connectorName: main
+    kind: PreProvisionedService
+    name: pgvector
+  targetRef:
+    apiGroup: apps.tanzu.vmware.com
+    kind: ContainerApp
+    name: CHANGE_ME

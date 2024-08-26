@@ -1,0 +1,12 @@
+---
+apiVersion: spaces.tanzu.vmware.com/v1alpha1
+kind: Trait
+metadata:
+  name: spring-cloud-gateway-trait
+spec:
+  description: Provides configurations for a Spring Cloud Gateway to provide a simple and effective route to APIs.Platform Engineers can standardize the gateway setup.
+  carvelPackages:
+    - alias: spring-cloud-gateway-installer.tanzu.vmware.com
+      refName: spring-cloud-gateway-installer.tanzu.vmware.com
+      versionSelection:
+        constraints: 1.0.0

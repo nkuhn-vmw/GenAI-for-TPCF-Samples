@@ -1,0 +1,120 @@
+# Contribute to Cloud Foundry documentation
+You can contribute to Cloud Foundry documentation.
+The Cloud Foundry documentation relies on contributions from the community to remain accurate, complete, and consumable.
+Reasons to contribute to the Cloud Foundry documentation are:
+
+* You noticed that a topic is incorrect or incomplete.
+
+* You are developing a new Cloud Foundry feature and want to tell users know how to use it.
+
+* You want to help your fellow humans.
+
+* You do not like the idea of someone else having to go through what you just went through to figure something out. Such a waste; so inefficient.
+
+## How can you contribute?
+The source files for all Cloud Foundry documentation are hosted on [GitHub](http://github.com), and each documentation page has a link to its GitHub source file at the bottom. The source files are in Markdown/HTML/embedded Ruby (`html.md.erb`) format.
+If you use GitHub, the most direct and effective way to contribute to the documentation is to submit a pull request (PR) or raise an issue in the GitHub repository containing the documentation that you want to change. For more information, see [Submit a GitHub Pull Request](https://docs.cloudfoundry.org/concepts/contribute.html#github-pr) and [Raise a GitHub Issue](https://docs.cloudfoundry.org/concepts/contribute.html#github-issue).
+If you do not already use GitHub, you can contribute to the Cloud Foundry documentation in other ways. For more information, see [Contribute Without GitHub](https://docs.cloudfoundry.org/concepts/contribute.html#non-github).
+Whichever way you contribute, please follow the guidelines in [Advice for Contributors](https://docs.cloudfoundry.org/concepts/contribute.html#advice).
+
+### Submitting a GitHub pull request
+If you have identified a problem with the documentation and know the required content change, the fastest way to make the change is by submitting a PR.
+The Cloud Foundry documentation team typically accepts PRs within a day, but might need to ask follow up questions.
+Before your PRs can be accepted, you must have a signed Contributor License Agreement (CLA) on file. If you do not, you are prompted to sign a CLA once you have opened your first PR.
+To submit a pull request:
+
+1. Go to the topic that you want to modify.
+
+2. To locate the GitHub source file that contains the content for the topic, scroll to the bottom of the page and click **Create a pull request or raise an issue on the source for this page in GitHub.**
+
+3. Click the pencil icon to edit the file in GitHub.
+
+4. Make your desired changes.
+
+5. Under **Commit changes** at the bottom of the page, enter a description of your change and click **Propose file change**.
+
+6. Click **Create pull request**.
+
+### Raising a GitHub issue
+If you do not have specific edits to make, but want start a discussion or make a general suggestion, you can raise a GitHub issue.
+GitHub issues take longer to resolve than pull requests. But, if you describe the issue with helpful background information, and have specific and actionable instructions, the Cloud Foundry documentation team can quickly address it.
+Vague or partially-baked GitHub issues might remain unaddressed for some time.
+To raise an issue on a GitHub repository:
+
+1. Go to the topic that you want to modify.
+
+2. To locate the GitHub source file that contains the content for the topic:
+
+1. Scroll to the bottom of the page.
+
+2. Click **Create a pull request or raise an issue on the source for this page in GitHub.**
+
+3. Click the name of the repository where the topic is located. For example, `docs-dev-guide`.
+
+4. Click the **Issues** tab.
+
+5. Click **New issue**.
+
+6. Enter a title for your issue, and in the text box, describe the issue and provide links to the relevant topics.
+
+7. Click **Submit new issue**.
+
+### Contributing without GitHub
+To contribute to the Cloud Foundry docs without using GitHub, you can use one of these methods:
+
+* **Send Feedback** link (TAS for VMs) or **Create a pull request or raise an issue on the source for this page in GitHub** (Cloud Foundry) on any page of the documentation.
+
+* **Slack** the Cloud Foundry docs team through the [#cf-docs](https://cloudfoundry.slack.com/messages/C03B0T0D5/") channel in Cloud Foundry Slack.
+
+## Contributor advice
+The Cloud Foundry documentation team reviews and revises all contributions, so you can **focus on providing correct and complete information, and not worry about style and structure**.
+Keep in mind:
+
+* If your contribution is larger than a small correction, put yourselves in the shoes of a novice and read through it. Revise the text to answer any questions that might occur to a less experienced user.
+
+* Who needs this information? Are they a developer or a platform operator?
+
+* What are the specifics that a user needs to know in order to understand and perform the task? Instead of “the instance” or “the cluster,” explain the instance or cluster of what. Instead of “revise the code to…”, explain where to revise the code.
+
+* If you are giving instructions, include why you would want to do what you are describing. What is your specific situation, and what result do you seek?
+For further guidance, contact the Cloud Foundry documentation team on our `#cf-docs` channel on the [Cloud Foundry Slack](https://cloudfoundry.slack.com).
+
+## Previewing documentation changes
+The Cloud Foundry documentation team uses the tool [Bookbinder](https://github.com/pivotal-cf/bookbinder) to publish the Cloud Foundry documentation.
+The following instructions explain how to use Bookbinder to preview your documentation changes locally. But you do not have to install or use Bookbinder in order to contribute to the Cloud Foundry documentation.
+To preview documentation changes with Bookbinder:
+
+1. If you do not already have a workspace directory within your home directory, create one by running:
+```
+mkdir ~/workspace
+```
+
+2. Identify the content repository where your documentation is located. For example, `https://github.com/cloudfoundry/docs-cloudfoundry-concepts`.
+
+3. Clone the content repository. For example, to clone the `docs-cloudfoundry-concepts` repository, run:
+```
+git clone git@=github.com:cloudfoundry/docs-cloudfoundry-concepts.git
+```
+
+4. Return to your workspace directory and clone the Cloud Foundry book by running:
+```
+git clone git@=github.com:cloudfoundry/docs-book-cloudfoundry.git
+```
+
+5. Change directory into the Cloud Foundry book by running:
+```
+cd docs-book-cloudfoundry
+```
+
+6. To install the necessary gems, including Bookbinder, run:
+```
+bundle install
+```
+
+7. To use Bookbinder to create a live version of your docs, run:
+```
+bundle exec bookbinder watch
+```
+
+8. Start a browser and go to `http://localhost:4567` to where your docs are published. For instance, `http://localhost:4567/cf-cli/install-go-cli.html`.
+Bookbinder automatically updates the live version of the documentation whenever you make a change to the content repository.

@@ -1,0 +1,42 @@
+name: Deploy to CF
+run-name: ${{ github.actor }} deploying
+on:
+  push:
+    branches:
+      - "dev"
+jobs:
+  gitops-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install CLI
+        run: |
+          wget -q -O - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | sudo apt-key add -
+            echo "deb https://packages.cloudfoundry.org/debian stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
+          sudo apt update
+          sudo apt install cf8-cli
+          sudo apt install openjdk-17-jdk openjdk-17-jre
+          sudo update-java-alternatives --set /usr/lib/jvm/java-1.17.0-openjdk-amd64
+          export JAVA_HOME=/usr/lib/jvm/java-1.17.0-openjdk-amd64
+
+      - name: Connect to CF API
+        env:
+          CF_API: ${{ vars.CF_API_ENDPOINT }}
+          CF_ORG: ${{ vars.CF_ORG }}
+          CF_SPACE: ${{ vars.CF_SPACE }}
+
+        run: |
+          cf api $CF_API --skip-ssl-validation
+          cf auth admin ${{ secrets.CF_API_TOKEN }}
+          cf target -o $CF_ORG -s $CF_SPACE
+
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Deploy
+        run: |
+          export JAVA_HOME=/usr/lib/jvm/java-1.17.0-openjdk-amd64  
+          mvn package
+          cf push
+
+
+          
+      - run: echo "🍏 This job's status is ${{ job.status }}."

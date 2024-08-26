@@ -1,0 +1,92 @@
+[
+    {
+        "_class": "org.cloudfoundry.samples.music.domain.Album",
+        "artist": "Black Sabbath",
+        "title": "Black Sabbath",
+        "releaseYear": "1970",
+        "genre": "Heavy Metal",
+        "userReview": "",
+        "userScore": ""
+    },
+    {
+        "_class": "org.cloudfoundry.samples.music.domain.Album",
+        "artist": "Black Sabbath",
+        "title": "Paranoid",
+        "releaseYear": "1970",
+        "genre": "Heavy Metal",
+        "userReview": "",
+        "userScore": ""
+    },
+    {
+        "_class": "org.cloudfoundry.samples.music.domain.Album",
+        "artist": "Black Sabbath",
+        "title": "Master of Reality",
+        "releaseYear": "1971",
+        "genre": "Heavy Metal",
+        "userReview": "",
+        "userScore": ""
+    },
+    {
+        "_class": "org.cloudfoundry.samples.music.domain.Album",
+        "artist": "Black Sabbath",
+        "title": "Vol. 4",
+        "releaseYear": "1975",
+        "genre": "Heavy Metal",
+        "userReview": "",
+        "userScore": ""
+    },
+    {
+        "_class": "org.cloudfoundry.samples.music.domain.Album",
+        "artist": "Black Sabbath",
+        "title": "Sabotage",
+        "releaseYear": "2014",
+        "genre": "Heavy Metal",
+        "userReview": "",
+        "userScore": ""
+    },
+    {
+        "_class": "org.cloudfoundry.samples.music.domain.Album",
+        "artist": "Metallica",
+        "title": "Master of Puppets",
+        "releaseYear": "1986",
+        "genre": "Heavy Metal",
+        "userReview": "",
+        "userScore": ""
+    },
+    {
+        "_class": "org.cloudfoundry.samples.music.domain.Album",
+        "artist": "Ozzy Osbourne",
+        "title": "Blizzard of Ozz",
+        "releaseYear": "1980",
+        "genre": "Heavy Metal",
+        "userReview": "",
+        "userScore": ""
+    },
+    {
+        "_class": "org.cloudfoundry.samples.music.domain.Album",
+        "artist": "Metallica",
+        "title": "Kill 'Em All",
+        "releaseYear": "1983",
+        "genre": "Heavy Metal",
+        "userReview": "",
+        "userScore": ""
+    },
+    {
+        "_class": "org.cloudfoundry.samples.music.domain.Album",
+        "artist": "Metallica",
+        "title": "Ride the Lighting",
+        "releaseYear": "1984",
+        "genre": "Heavy Metal",
+        "userReview": "",
+        "userScore": ""
+    },
+    {
+        "_class": "org.cloudfoundry.samples.music.domain.Album",
+        "artist": "Metallica",
+        "title": "...And Justice for All",
+        "releaseYear": "1988",
+        "genre": "Heavy Metal",
+        "userReview": "",
+        "userScore": ""
+    }
+]

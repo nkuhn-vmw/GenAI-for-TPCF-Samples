@@ -1,0 +1,16 @@
+apiVersion: services.tanzu.vmware.com/v1
+kind: ServiceBinding
+metadata:
+  name: genai-CHANGE_ME
+  namespace: default
+spec:
+  alias: ai
+  serviceRef:
+    apiGroup: services.tanzu.vmware.com
+    connectorName: main
+    kind: PreProvisionedService
+    name: genai
+  targetRef:
+    apiGroup: apps.tanzu.vmware.com
+    kind: ContainerApp
+    name: CHANGE_ME

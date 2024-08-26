@@ -1,0 +1,56 @@
+# Cloud Foundry routing architecture
+This topic tells you about the routing architecture and flow in Cloud Foundry.
+
+## Routing architecture components
+The following summarizes the roles and responsibilities of various components
+depicted in the Cloud Foundry routing architecture diagrams.
+These summaries are limited to the roles and responsibilities these components have pertaining to routing. For more complete descriptions of these components, see [Cloud Foundry Concepts](https://docs.cloudfoundry.org/concepts/), [Cloud Foundry Components](https://docs.cloudfoundry.org/concepts/architecture/), and [Diego Components and Architecture](https://docs.cloudfoundry.org/concepts/diego/diego-architecture.html).
+| Component Name | Summary |
+| --- | --- |
+| BOSH manifest | Used to configure route registrar with route(s) for system components such as UAA and Loggregator. |
+| Cloud Controller | Contains route metadata, including whether they are HTTP or TCP. |
+| Diego BBS | Contains IP and port metadata as well as route metadata from Cloud Controller, which route emitter discovers. |
+| Diego cell | Manages app instances and tasks and long-running processes related to them. A route emitter runs on each cell. |
+| Gorouter | Routes HTTP traffic coming into Cloud Foundry to the appropriate component. Receives route updates through NATS. Routes that have not been updated in two minutes are pruned from the Gorouter’s database. |
+| NATS | Receives routing configuration from route emitter and provides same to Gorouter. |
+| Route registrar | Sends routing metadata described in BOSH manifest for system components such as UAA and Loggregator to NATS. This is because the Diego cell does not have information about system components, only about user spaces. |
+| Route emitter | Periodically emits route, IP, and port metadata to NATS or Routing API as registration and unregistration messages. Does not know about app instances on Diego cell, but knows what cell it belongs to and learns about what app instances are running on its cell by asking Diego BBS for information about app instances on the same cell. |
+| Routing API | Receives routing configuration from route emitter and other internal clients, and provides routing configuration for TCP router. |
+| Routing database | Saves some routing data from Routing API. If the Gorouter misses a message about an unmapped route from NATS, it does not get it again, so TCP router and Routing API can consult routing database for current state of routes. |
+| TCP router | Routes TCP traffic coming into Cloud Foundry to the appropriate component. Receives route updates through the routing API. |
+| HealthChecker | An executable designed to perform TCP/HTTP-based health checks of processes managed by monit in BOSH releases. Because the version of monit included in BOSH does not support specific TCP/HTTP health checks, this utility is designed to perform health checking, and restart processes if they become unreachable. |
+
+## Making a request to external client
+The following process tells you about how an external client makes a request to an
+app running on Cloud Foundry:
+
+1. The external client sends its request.
+
+2. Your DNS service sends the request to the HTTP or TCP load balancer based on the prefix of the DNS name in the client request, such as `http` in `http.example.com`.
+
+3. The load balancer sends the request to the load balancer’s corresponding router.
+
+4. The router sends the request to the app.
+![External client request flow. The External Client sends out two data flows, one to the HTTP Load Balancer (http.cf-apps.com) and one to the TCP Load Balancer (tcp.cf-apps.com). HTTP Load Balancer sends data through Gorouter to the HTTP Application. TCP Load Balancer sends data through TCP Router to the TCP Application. Gorouter, TCP Router, HTTP Application, and TCP Application are co-located in in a box labelled Cloud Foundry.](https://docs.cloudfoundry.org/concepts/images/external-client-call-app.png)
+
+## Maintaining updated routing tables
+Because each app can have many instances, one app route can go to multiple containers.
+As Diego moves and scales app instances, the route emitter on each cell sends messages to NATS or
+the Routing API to register and deregister routes to the cell’s app instances.
+The route emitter periodically emits the routes it discovers from Diego BBS to NATS and the Routing API as registration and unregistration messages every twenty seconds. The Gorouter uses TLS to verify app identity and confirm that its routes are up-to-date. For more information about how Cloud Foundry maintains route consistency, see [Preventing Misrouting](https://docs.cloudfoundry.org/concepts/http-routing.html#consistency) in *HTTP Routing*.
+The following process describes how a router obtains information about routes for an app running on Cloud Foundry:
+
+1. Cloud Controller component sends app route information to Diego BBS. For HTTP routing, route information includes the host and path of an external URL, as shown in the format of the [`router.register` message](https://github.com/cloudfoundry/gorouter#registering-routes-via-nats) in the Gorouter documentation on GitHub. For TCP routing, route information includes the route port on which the TCP connection was received; for more information, see the [Routing API documentation on GitHub](https://github.com/cloudfoundry/routing-api/blob/main/docs/api_docs.md#create-tcp-routes).
+
+2. Diego BBS coordinates the back end IP address and port where each instance of the app runs. When queried by the route emitter, the BBS sends this information along with the Cloud Controller app route information to the route emitter on the Diego cell where instances of the app are located.
+
+3. If a route is HTTP, the route emitter on the Diego cells sends app route, IP, and port information to NATS, which then sends it to the Gorouter. If a route is TCP, the route emitter sends that information to the Routing API, which then sends it to the TCP router.
+
+4. Gorouter and TCP router use the route, IP, and port information from the route emitter to map incoming app requests to back end app instance locations.
+![Routing architecture](https://docs.cloudfoundry.org/concepts/images/cf-routing-architecture.png)
+
+### Routing table recovery after component failure
+Cloud Controller and Diego BBS have their own databases, while NATS and the Gorouter only store
+their data in memory. If NATS or the Gorouter are restarted, they lose all of their data and must
+wait for the route emitter to send data to them again. If Diego BBS is restarted, it can retrieve its data from Cloud Controller.
+If Cloud Controller is restarted, you must retrieve its data from a backup.

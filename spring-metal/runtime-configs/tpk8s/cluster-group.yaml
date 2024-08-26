@@ -1,0 +1,12 @@
+# cluster_group.yaml
+type:
+  kind: ClusterGroup
+  package: vmware.tanzu.manage.v1alpha1.clustergroup
+  version: v1alpha1
+fullName:
+  name: "spring-ai-cluster-group"
+meta:
+  description: "TAE-enabled cluster group"
+spec:
+  integrations:
+    - TANZU_APPLICATION_ENGINE # TAE-enabled

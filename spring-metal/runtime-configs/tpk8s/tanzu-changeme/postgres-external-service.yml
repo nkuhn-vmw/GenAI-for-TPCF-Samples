@@ -1,0 +1,26 @@
+apiVersion: v1
+data:
+  database: cG9zdGdyZXM= # postgres
+  host: PGVECTOR_HOST
+  username: PGVECTOR_USERNAME
+  password: PGVECTOR_PASSWORD
+  port: PGVECTOR_PORT
+  provider: dGFzcG9zdGdyZXNxbA==  # tas
+  type: cG9zdGdyZXNxbAo= # postgresql
+kind: Secret
+metadata:
+  name: pgvector-creds
+type: servicebinding.io/postgresql
+
+---
+apiVersion: services.tanzu.vmware.com/v1
+kind: PreProvisionedService
+metadata:
+  name: pgvector
+spec:
+  bindingConnectors:
+  - name: main
+    description: Posgres pgvector service for AI use cases
+    type: postgresql
+    secretRef:
+      name: pgvector-creds

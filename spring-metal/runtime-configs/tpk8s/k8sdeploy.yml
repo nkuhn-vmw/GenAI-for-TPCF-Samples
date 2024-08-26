@@ -1,0 +1,46 @@
+name: Deploy to K8s
+run-name: ${{ github.actor }} deploying
+on:
+  push:
+    branches:
+      - "dev"
+jobs:
+  gitops-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Tanzu CLI
+        env:
+          TANZU_CLI_VERSION: ${{vars.TANZU_CLI_VERSION}}
+        run: |
+          curl -Lo tanzu-cli-linux-amd64.tar.gz https://github.com/vmware-tanzu/tanzu-cli/releases/download/${TANZU_CLI_VERSION}/tanzu-cli-linux-amd64.tar.gz
+          curl -Lo tanzu-cli-binaries-checksums.txt https://github.com/vmware-tanzu/tanzu-cli/releases/download/${TANZU_CLI_VERSION}/tanzu-cli-binaries-checksums.txt
+          if [ "$(cat tanzu-cli-binaries-checksums.txt | grep tanzu-cli-linux-amd64.tar.gz)" != "$(sha256sum tanzu-cli-linux-amd64.tar.gz)" ]; then echo "Checksum does not match"; exit 1; fi
+          tar -xf tanzu-cli-linux-amd64.tar.gz
+          mv ${TANZU_CLI_VERSION}/tanzu-cli-linux_amd64 /usr/local/bin/tanzu
+          tanzu ceip-participation set false
+          tanzu config eula accept
+          tanzu init
+          tanzu version
+
+      - name: Install Tanzu plugins
+        env:
+          TANZU_CLI_INCLUDE_DEACTIVATED_PLUGINS_TEST_ONLY: 1
+        run: |
+          tanzu plugin install build -v v0.9.2 -t 'global'
+          tanzu plugin install resource -v v0.2.0 -t 'global'
+          tanzu plugin install project -v v0.2.0 -t 'global'
+          tanzu plugin install space -v v0.2.0 -t 'global'
+
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Build and Deploy to Tanzu Space
+        env:
+          TANZU_API_TOKEN: ${{ secrets.API_TOKEN }}
+        run: |
+          tanzu login --endpoint ${{ vars.API_ENDPOINT }}
+          tanzu build config --build-plan-source-type=file --build-plan-source conf/platform-config.yml --containerapp-registry ${{ vars.BUILD_REGISTRY_CONF}}
+          docker login ${{ vars.REGISTRY }} -u ${{vars.REGISTRY_USER_NAME}} -p ${{ secrets.RERGISTRY_PASS}}
+          tanzu project use ${{ vars.PROJECT }}
+          tanzu space use ${{ vars.SPACE_DEV }}
+          tanzu deploy --patch --diff -y
+      - run: echo "🍏 This job's status is ${{ job.status }}."

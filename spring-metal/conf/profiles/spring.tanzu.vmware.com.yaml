@@ -1,0 +1,39 @@
+---
+apiVersion: spaces.tanzu.vmware.com/v1alpha1
+kind: Profile
+metadata:
+  name: spring.tanzu.vmware.com
+spec:
+  description: Spring Profile configures Spring Cloud Gateway for your cloud native application architecture. With Spring profile, you can take advantage of our Bitnami services, enterprise API gateway, observability delivered at runtime and enhanced service discovery with MTLS and Cert manager to provide security to spring applications deployed to the space.
+  requiredCapabilities:
+    - name: spring-cloud-gateway.tanzu.vmware.com
+    - name: bitnami.services.tanzu.vmware.com
+    - name: package-management.tanzu.vmware.com
+    - name: services-toolkit.tanzu.vmware.com
+    - name: multicloud-ingress.tanzu.vmware.com
+    - name: observability.tanzu.vmware.com
+  traits:
+    - name: spring-cloud-gateway-trait
+      alias: spring-cloud-gateway-trait
+    - name: public-ingress
+      alias: public-ingress
+    - name: mtls.tanzu.vmware.com
+      alias: mtls.tanzu.vmware.com
+    - name: selfsigned-certificate-issuer
+      alias: selfsigned-certificate-issuer
+    - name: egress
+      alias: egress
+    - name: observability
+      alias: observability
+    - name: workload-installer
+      alias: workload-installer
+      values:
+        inline:
+          workload-installer.tanzu.vmware.com:
+            #! Service account name to be created and granted permissions, associating it with RBAC rules for server workloads.
+            serviceAccountName: workload-installer
+          workload-imagepull-secret.tanzu.vmware.com:
+            #! name of ImagePullSecret to be associated with workload serviceAccount.
+            secretName: workload-imagepull-secret
+            #! Service account used for running the workload.
+            serviceAccountName: default

@@ -1,0 +1,51 @@
+apiVersion: v1
+data:
+  uri: CHAT_API_URL
+  api-key: CHAT_API_KEY
+  model-name: CHAT_MODEL_NAME
+  model-capabilities: CHAT_MODEL_CAPABILITIES
+  provider: dGFuenU= # tanzu
+  type: Z2VuYWk=  # genai
+kind: Secret
+metadata:
+  name: genai-chat-creds
+type: servicebinding.io/ai
+
+---
+apiVersion: services.tanzu.vmware.com/v1
+kind: PreProvisionedService
+metadata:
+  name: genai-chat
+spec:
+  bindingConnectors:
+  - name: main
+    description: Gen AI credentials
+    type: genai
+    secretRef:
+      name: genai-chat-creds
+---
+apiVersion: v1
+data:
+  uri: EMBED_API_URL
+  api-key: EMBED_API_KEY
+  model-name: EMBED_MODEL_NAME
+  model-capabilities: EMBED_MODEL_CAPABILITIES
+  provider: dGFuenU= # tanzu
+  type: Z2VuYWk=  # genai
+kind: Secret
+metadata:
+  name: genai-embed-creds
+type: servicebinding.io/ai
+
+---
+apiVersion: services.tanzu.vmware.com/v1
+kind: PreProvisionedService
+metadata:
+  name: genai-embed
+spec:
+  bindingConnectors:
+  - name: main
+    description: Gen AI credentials
+    type: genai
+    secretRef:
+      name: genai-embed-creds

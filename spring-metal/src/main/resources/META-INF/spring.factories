@@ -1,0 +1,3 @@
+# Binding Properties Factories
+org.springframework.cloud.bindings.boot.BindingsPropertiesProcessor=\
+  org.springframework.ai.bindings.TanzuBindingsPropertiesProcessor

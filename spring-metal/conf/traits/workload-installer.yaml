@@ -1,0 +1,28 @@
+---
+apiVersion: spaces.tanzu.vmware.com/v1alpha1
+kind: Trait
+metadata:
+  name: workload-installer
+spec:
+  description: Workload installer define the specific characteristics and requirements of applications or services running on the cluster.
+  carvelPackages:
+  - refName: workload-installer.tanzu.vmware.com
+    alias: workload-installer.tanzu.vmware.com
+    versionSelection:
+      constraints: "0.1.0-alpha.3"
+    values:
+      inline:
+        imagePullSecrets: []
+        serviceAccountName: workload-installer
+    excludedKeys:
+    - imagePullSecrets
+  - refName: workload-imagepull-secret.tanzu.vmware.com
+    alias: workload-imagepull-secret.tanzu.vmware.com
+    versionSelection:
+      constraints: "0.1.0-alpha.3"
+    values:
+      inline:
+        #! name of ImagePullSecret to be associated with workload serviceAccount.
+        secretName: workload-imagepull-secret
+        #! Service account used for running the workload.
+        serviceAccountName: default

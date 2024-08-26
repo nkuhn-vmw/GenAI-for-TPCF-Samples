@@ -1,0 +1,23 @@
+needs-work/web-automation/chrome*
+# Operating System Files
+
+*.DS_Store
+Thumbs.db
+*~
+.#*
+#*
+*#
+
+# tanzu files #
+.tanzu
+.build-output
+
+# Build Files #
+
+bin
+target
+build/
+.gradle
+.mvn
+
+# Eclipse Project Files #

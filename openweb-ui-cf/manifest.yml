@@ -1,0 +1,17 @@
+applications:
+- name: openweb-ui
+  disk_quota: 6G
+  env:
+    WEBUI_AUTH: "False"
+    ENABLE_SIGNUP: "False"
+    WEBUI_SECRET_KEY: "12324324432"
+    WEBUI_NAME: Tanzu Platform
+  instances: 1
+  memory: 1G
+  services:
+  - vpaif-llama3.1
+  - all-minilm:l6-v2
+  - llava
+  - gemma2:2b
+  - casperhansen/llama-3-8b-instruct-awq
+  stack: cflinuxfs4

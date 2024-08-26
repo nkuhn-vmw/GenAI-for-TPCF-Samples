@@ -1,0 +1,78 @@
+name: Build and Deploy to TP
+run-name: ${{ github.actor }} deploying
+on:
+  push:
+    branches:
+      - "dev"
+jobs:
+  gitops-deploy:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Install Tanzu CLI
+        env:
+          TANZU_CLI_VERSION: ${{vars.TANZU_CLI_VERSION}}
+        run: |
+          curl -Lo tanzu-cli-linux-amd64.tar.gz https://github.com/vmware-tanzu/tanzu-cli/releases/download/${TANZU_CLI_VERSION}/tanzu-cli-linux-amd64.tar.gz
+          curl -Lo tanzu-cli-binaries-checksums.txt https://github.com/vmware-tanzu/tanzu-cli/releases/download/${TANZU_CLI_VERSION}/tanzu-cli-binaries-checksums.txt
+          if [ "$(cat tanzu-cli-binaries-checksums.txt | grep tanzu-cli-linux-amd64.tar.gz)" != "$(sha256sum tanzu-cli-linux-amd64.tar.gz)" ]; then echo "Checksum does not match"; exit 1; fi
+          tar -xf tanzu-cli-linux-amd64.tar.gz
+          mv ${TANZU_CLI_VERSION}/tanzu-cli-linux_amd64 /usr/local/bin/tanzu
+          tanzu ceip-participation set false
+          tanzu config eula accept
+          tanzu init
+          tanzu version
+          tanzu plugin install build
+          tanzu plugin install resource
+          
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Build
+        env:
+          TANZU_API_TOKEN: ${{ secrets.API_TOKEN }}
+        run: |
+          tanzu login --endpoint ${{ vars.API_ENDPOINT }}
+          tanzu build config --build-plan-source-type=file --build-plan-source conf/platform-config.yml --containerapp-registry ${{ vars.BUILD_REGISTRY_CONF }}
+          echo ${{ vars.REGISTRY }}
+          echo ${{ vars.REGISTRY_USER_NAME }}
+          echo ${{ vars.BUILD_REGISTRY_CONF }}
+          docker login ${{ vars.REGISTRY }} -u ${{ vars.REGISTRY_USER_NAME }} -p ${{ secrets.RERGISTRY_PASS }}
+          tanzu build -o .build-output
+
+      - uses: de-vri-es/setup-git-credentials@v2
+        with:
+          credentials: ${{secrets.GIT_CREDENTIALS}}
+        
+      - name: Promote to TPK8S Gitops
+        run: |
+          git config --global user.name "0pens0"
+          git config --global user.email oren@penso.io
+          git clone https://github.com/0pens0/spring-metal-gitops -b stage
+          tanzu promote --from-build .build-output/apps.tanzu.vmware.com.ContainerApp/spring-metal/kubernetes-carvel-package/output --to spring-metal-gitops/git-ops/spaces/spring-metal-dev
+          tanzu promote --from-build .build-output/apps.tanzu.vmware.com.ContainerApp/spring-metal/kubernetes-carvel-package/output --to spring-metal-gitops/git-ops/spaces/spring-metal-stage
+          cd spring-metal-gitops
+          git add .
+          git commit -m "push new version to stage"
+          git push
+      
+      - name: Deploy to TPCF
+        env:
+          CF_DOCKER_PASSWORD: ${{secrets.CF_DOCKER_PASSWORD}}
+        run: |
+          wget -q -O - https://packages.cloudfoundry.org/debian/cli.cloudfoundry.org.key | sudo apt-key add -
+          echo "deb https://packages.cloudfoundry.org/debian stable main" | sudo tee /etc/apt/sources.list.d/cloudfoundry-cli.list
+          sudo apt update
+          sudo apt install cf8-cli
+          cf api ${{ vars.CF_API_ENDPOINT }} --skip-ssl-validation
+          cf auth admin ${{ secrets.CF_API_TOKEN }}
+          cf target -o ${{ vars.CF_ORG }} -s ${{ vars.CF_SPACE }}
+          cf push spring-metal-gitops  --docker-image harbor.vmtanzu.com/openso-tap-apps/spring-metal --docker-username openso
+
+
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          branch: dev
+          commit_user_name: 0pens0
+
+      - run: echo "🍏 This job's status is ${{ job.status }}."

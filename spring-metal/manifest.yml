@@ -1,0 +1,13 @@
+applications:
+- name: spring-metal-explore
+  memory: 1G
+  path: target/spring-metal-0.5.jar
+  buildpack: java_buildpack_offline
+  env:
+    JBP_CONFIG_SPRING_AUTO_RECONFIGURATION: '{enabled: false}'
+    SPRING_PROFILES_ACTIVE: http2
+    JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 17.+ } }'
+  services:
+  - spring-metal-db
+  - spring-metal-chat
+  - spring-metal-embed
