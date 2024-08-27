@@ -1,0 +1,11 @@
+streamlit==1.22.0
+streamlit_chat
+openai
+langchain
+langchain_community
+langchain_openai
+psycopg2
+cfenv
+pgvector
+PyPDF2
+tiktoken
