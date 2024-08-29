@@ -12,4 +12,6 @@ See example Applications below:
 
 3. [openweb-ui-cf](https://github.com/nkuhn-vmw/GenAI-for-TPCF-Samples/tree/main/openweb-ui-cf) The ever popular openweb ui frontend with TPCF deployment options and examples for GenAI for TPCF.
 
+4. [acme-fitness](https://github.com/spring-cloud-services-samples/acme-fitness-store) This represents a fictional e-commerce store running multiple microservices and a new acme-assist microservice to provide a curated chatbot experience to assist customers in their shopping experience.
+
 
