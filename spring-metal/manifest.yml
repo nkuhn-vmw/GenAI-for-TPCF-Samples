@@ -10,4 +10,4 @@ applications:
   services:
   - spring-metal-db
   - spring-metal-chat
-  - spring-metal-embed
+ # - spring-metal-embed
