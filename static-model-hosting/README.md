@@ -2,11 +2,11 @@
 #run these commmands in your local diretory to download the GGUFs from HuggingFace
 #mix and match as you see fit
 
+#Please note to host the modle files directoy via a CF app - it must be under 5gb in size.
+
 #chat model runs on cpu-large worker
 wget https://huggingface.co/bartowski/gemma-2-2b-it-GGUF/resolve/main/gemma-2-2b-it-Q6_K_L.gguf
 
-#chat model - runs on T4 8c vgpu
-wget https://huggingface.co/bartowski/gemma-2-9b-it-GGUF/resolve/main/gemma-2-9b-it-Q4_K_L.gguf
 
 #embedding model runs on cpu worker
 wget https://huggingface.co/nomic-ai/nomic-embed-text-v1.5-GGUF/resolve/main/nomic-embed-text-v1.5.f32.gguf
@@ -22,14 +22,6 @@ https://admin:admin@model-repo.apps.sdc.tpcf.tmm-labs.com/gemma-2-2b-it-Q6_K_L.g
 
 #shasum:
 b2ef9f67b38c6e246e593cdb9739e34043d84549755a1057d402563a78ff2254
-
-gemma2:9b
-
-#model url:
-https://admin:admin@model-repo.apps.sdc.tpcf.tmm-labs.com/gemma-2-9b-it-Q4_K_L.gguf
-
-#shasum:
-70ea6fe1a4a8005ef6a0b379a87d271028cfa1b0be5fa2848e30419653d717a4
 
 
 
