@@ -7,7 +7,7 @@ You will also pre-create a simple postgres database for data and vector db suppo
 
 We will use a two differnet LLM models ***gemma2*** for chat intference and ***nomic-embed-text*** for embedding.
 
-See Architecture diagram:
+***See Architecture diagram:***
 ![Alt text](https://github.com/nkuhn-vmw/GenAI-for-TPCF-Samples/blob/main/spring-metal/spring-metal-arch.png "Spring-metal AI Architecture")
 
 ## Create Service Intances for Spring-Metal
@@ -30,6 +30,7 @@ mvn clean package -DskipTests
 
 ### Deploy
 ```bash
+cd ./spring-metal #navigate to spring-metal dir 
 cf push
 ```
 
