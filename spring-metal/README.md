@@ -2,9 +2,7 @@
 
 ## Architecture
 
-![Alt text](spring-metal/spring-metal-arch.png "Spring-metal AI Architecture")
-
-
+![Alt text](https://github.com/nkuhn-vmw/GenAI-for-TPCF-Samples/blob/main/spring-metal/spring-metal-arch.png "Spring-metal AI Architecture")
 
 ## Installation
 
