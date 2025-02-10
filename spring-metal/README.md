@@ -4,27 +4,28 @@
 
 ![Alt text](https://github.com/nkuhn-vmw/GenAI-for-TPCF-Samples/blob/main/spring-metal/spring-metal-arch.png "Spring-metal AI Architecture")
 
-## Installation
+## Create Service Intances for Spring-Metal
 
 ```bash
-PGVECTOR_SERVICE_NAME="vector-db"
-PGVECTOR_PLAN_NAME="on-demand-postgres-db"
-PGVECTOR_EXTERNAL_PORT=1025 # Need TCP Router on the TPCF foundation enabled, and Service Gateways on the Postgres tile enabled.  Choose an available port 
+#Create Chat Service
+cf create-service genai gemma2:2b spring-metal-chat
 
-GENAI_CHAT_SERVICE_NAME="genai-chat" 
-GENAI_CHAT_PLAN_NAME="meta-llama/Meta-Llama-3-8B-Instruct" # plan must have chat capabilty
+#Create Embedding Service
+cf create-service genai nomic-embed-text spring-metal-embed
 
-GENAI_EMBEDDINGS_SERVICE_NAME="genai-embed" 
-GENAI_EMBEDDINGS_PLAN_NAME="nomic-embed-text" # plan must have Embeddings capabilty
+#Create Postgres DB
+cf create-service postgres on-demand-postgres-db spring-metal-db
 ```
 
-#### Build
-
+#### Compile Spring-Metal with maven
 ```bash
 mvn clean package -DskipTests
 ```
 
-
+#### Deploy
+```bash
+cf push
+```
 
 ## Contributing
 Contributions to this project are welcome. Please ensure to follow the existing coding style and add unit tests for any new or changed functionality.
