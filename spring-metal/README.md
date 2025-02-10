@@ -2,7 +2,7 @@
 
 ## Architecture
 
-![Alt text](https://github.com/0pens0/spring-metal/blob/main/image.png?raw=true "Spring-metal AI topology")
+![Alt text](spring-metal/spring-metal-arch.png "Spring-metal AI Architecture")
 
 
 
