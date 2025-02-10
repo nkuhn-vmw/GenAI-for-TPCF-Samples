@@ -1,5 +1,5 @@
 applications:
-- name: spring-metal-explore
+- name: spring-metal-tanzu-live
   memory: 1G
   path: target/spring-metal-0.5.jar
   buildpack: java_buildpack_offline
