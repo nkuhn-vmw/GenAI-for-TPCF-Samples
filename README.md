@@ -10,7 +10,7 @@ See example Applications below:
 
 2. [Spring Metal](https://github.com/nkuhn-vmw/GenAI-for-TPCF-Samples/tree/main/spring-metal) A modifed version of the classic "Spring Music" Cloud Foundry application infused with magic from the new [Spring AI project](https://github.com/spring-projects/spring-ai). This app will add a "Spring Music Assistant" when the GenAI for TAS service is bound to this application.
 
-3. [openweb-ui-cf](https://github.com/nkuhn-vmw/GenAI-for-TPCF-Samples/tree/main/openweb-ui-cf) The ever popular openweb ui frontend with TPCF deployment options and examples for GenAI for TPCF.
+3. [open-webui-cf](https://github.com/nkuhn-vmw/GenAI-for-TPCF-Samples/tree/main/open-webui-cf) The ever popular openweb ui frontend with TPCF deployment options and examples for GenAI for TPCF.
 
 4. [acme-fitness](https://github.com/spring-cloud-services-samples/acme-fitness-store) This represents a fictional e-commerce store running multiple microservices and a new acme-assist microservice to provide a curated chatbot experience to assist customers in their shopping experience.
 
