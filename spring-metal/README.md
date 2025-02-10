@@ -1,7 +1,13 @@
 
 
 ## Architecture
+For this example you will deploy the spring application "spring-metal" on tPCF.
+You will also pre-create a Chat and Embedding service from the GenAI on tPCF tile.
+You will also pre-create a simple postgres database for data and vector db support from the Postgres tile for tPCF.
 
+We will use a two differnet LLM models gemma2 for chat intference and nomic-embed-text for embedding.
+
+See Architecture diagram:
 ![Alt text](https://github.com/nkuhn-vmw/GenAI-for-TPCF-Samples/blob/main/spring-metal/spring-metal-arch.png "Spring-metal AI Architecture")
 
 ## Create Service Intances for Spring-Metal
@@ -17,12 +23,12 @@ cf create-service genai nomic-embed-text spring-metal-embed
 cf create-service postgres on-demand-postgres-db spring-metal-db
 ```
 
-#### Compile Spring-Metal with maven
+### Compile Spring-Metal with maven
 ```bash
 mvn clean package -DskipTests
 ```
 
-#### Deploy
+### Deploy
 ```bash
 cf push
 ```
