@@ -27,8 +27,8 @@ http_client = httpx.AsyncClient(
 env = AppEnv()
 print(env.services)
 pg = env.get_service(label='postgres')
-llm_chat = env.get_service(name='streamlit-llama')
-llm_embeddings = env.get_service(name='streamlit-bge')
+llm_chat = env.get_service(name='gemma2:9b-gpu')
+llm_embeddings = env.get_service(name='nomic-embed-text-cpu')
 chunk_size = 500
 chunk_overlap = 50
 

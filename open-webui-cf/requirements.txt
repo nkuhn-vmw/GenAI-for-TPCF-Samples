@@ -1,0 +1,4 @@
+--extra-index-url=https://download.pytorch.org/whl/cpu
+open-webui
+#use this below if you need to lock a certain version of openweb-ui
+#open-webui==0.3.15

@@ -1,5 +1,5 @@
 applications:
-- name: openweb-ui
+- name: open-webui-cf
   disk_quota: 6G
   env:
     WEBUI_AUTH: "False"
@@ -7,11 +7,9 @@ applications:
     WEBUI_SECRET_KEY: "12324324432"
     WEBUI_NAME: Tanzu Platform
   instances: 1
-  memory: 1G
+  memory: 2G
   services:
-  - vpaif-llama3.1
-  - all-minilm:l6-v2
-  - llava
-  - gemma2:2b
-  - casperhansen/llama-3-8b-instruct-awq
+  - nomic-embed-text
+  - gemma-2-2b-it-Q6
+  - deepseek-r1:671b
   stack: cflinuxfs4

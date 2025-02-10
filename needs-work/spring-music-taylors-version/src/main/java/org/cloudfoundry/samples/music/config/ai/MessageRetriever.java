@@ -14,75 +14,74 @@
  * limitations under the License.
  */
 
-package org.cloudfoundry.samples.music.config.ai;
+ package org.cloudfoundry.samples.music.config.ai;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
-import org.springframework.ai.chat.messages.Message;
-import org.springframework.ai.chat.model.ChatModel;
-import org.springframework.ai.chat.prompt.SystemPromptTemplate;
-import org.springframework.ai.document.Document;
-import org.springframework.ai.vectorstore.SearchRequest;
-import org.springframework.ai.vectorstore.VectorStore;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-
-/**
- *
- * @author Christian Tzolov
- * @author Stuart Charlton
- * @author Adib Saikali
- */
-public class MessageRetriever {
-
-	@Value("classpath:/prompts/system-qa.st")
-	private Resource systemPrompt;
-	private VectorStore vectorStore;
-	private ChatClient chatClient;
-
-	private static final Logger logger = LoggerFactory.getLogger(MessageRetriever.class);
-	
-	
-	public MessageRetriever(VectorStore vectorStore, ChatModel chatModel) {
-		this.vectorStore = vectorStore;
-		this.chatClient = ChatClient.builder(chatModel).build();
-	}
-
-    public String retrieve(String message) {
-
-		return this.chatClient
-				.prompt()
-				.advisors(new QuestionAnswerAdvisor(this.vectorStore, SearchRequest.defaults()))
-				.user(message)
-				.call()
-				.content();
-
-		/* // hand rolled implementation
-		List<Document> relatedDocuments = this.vectorStore.similaritySearch(message);
-		logger.info("first doc retrieved " + relatedDocuments.get(0).toString());
-
-		Message systemMessage = getSystemMessage(relatedDocuments);
-		logger.info("system Message retrieved " + systemMessage.toString());
-
-		return this.chatClient.prompt()
-				.messages(systemMessage)
-				.user(message)
-				.call()
-				.content();
-		*/
-	}
-
-	private Message getSystemMessage(List<Document> relatedDocuments) {
-
-		String documents = relatedDocuments.stream().map(entry -> entry.getContent()).collect(Collectors.joining("\n"));
-		SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(systemPrompt);
-		Message systemMessage = systemPromptTemplate.createMessage(Map.of("documents", documents));
-		return systemMessage;
-
-	}
-}
+ import java.util.List;
+ import java.util.Map;
+ import java.util.stream.Collectors;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ import org.springframework.ai.chat.client.ChatClient;
+ import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
+ import org.springframework.ai.chat.messages.Message;
+ import org.springframework.ai.chat.model.ChatModel;
+ import org.springframework.ai.chat.prompt.SystemPromptTemplate;
+ import org.springframework.ai.document.Document;
+ import org.springframework.ai.vectorstore.SearchRequest;
+ import org.springframework.ai.vectorstore.VectorStore;
+ import org.springframework.beans.factory.annotation.Value;
+ import org.springframework.core.io.Resource;
+ 
+ /**
+  *
+  * @author Christian Tzolov
+  */
+ public class MessageRetriever {
+ 
+	 @Value("classpath:/prompts/system-qa.st")
+	 private Resource systemPrompt;
+	 private VectorStore vectorStore;
+	 private ChatClient chatClient;
+ 
+	 private static final Logger logger = LoggerFactory.getLogger(MessageRetriever.class);
+	 
+	 public MessageRetriever(VectorStore vectorStore, ChatModel chatModel) {
+		 this.vectorStore = vectorStore;
+		 this.chatClient = ChatClient.builder(chatModel).build();
+	 }
+ 
+ 
+	 public String retrieve(String message) {
+ 
+		 return this.chatClient
+				 .prompt()
+				 .advisors(new QuestionAnswerAdvisor(this.vectorStore))
+				 .user(message)
+				 .call()
+				 .content();
+ 
+		 /* // hand rolled implementation
+		 List<Document> relatedDocuments = this.vectorStore.similaritySearch(message);
+		 logger.info("first doc retrieved " + relatedDocuments.get(0).toString());
+ 
+		 Message systemMessage = getSystemMessage(relatedDocuments);
+		 logger.info("system Message retrieved " + systemMessage.toString());
+ 
+		 return this.chatClient.prompt()
+				 .messages(systemMessage)
+				 .user(message)
+				 .call()
+				 .content();
+		 */
+ 
+	 }
+ 
+	 private Message getSystemMessage(List<Document> relatedDocuments) {
+		 String documents = relatedDocuments.stream().map(entry -> entry.getFormattedContent()).collect(Collectors.joining("\n"));
+	 //	String documents = relatedDocuments.stream().map(entry -> entry.getContent()).collect(Collectors.joining("\n"));
+		 SystemPromptTemplate systemPromptTemplate = new SystemPromptTemplate(systemPrompt);
+		 Message systemMessage = systemPromptTemplate.createMessage(Map.of("documents", documents));
+		 return systemMessage;
+ 
+	 }
+ }

@@ -1,0 +1,12 @@
+applications:
+- name: streamlit-test
+  memory: 1G
+  buildpack: python_buildpack
+# env:
+#    INPUT_MODEL: phi3
+  services:
+    - streamlit-db
+    - gemma2:9b-gpu
+    - nomic-embed-text-cpu
+#Create a GenAI for TAS Service for this app to function
+#Create service(s) ahead of time with either the cf cli or Apps Manager
