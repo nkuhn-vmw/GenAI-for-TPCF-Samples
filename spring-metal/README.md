@@ -1,5 +1,11 @@
 
 
+## Architecture
+
+![Alt text](https://github.com/0pens0/spring-metal/blob/main/image.png?raw=true "Spring-metal AI topology")
+
+
+
 ## Installation
 
 ```bash
