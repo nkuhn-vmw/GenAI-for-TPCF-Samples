@@ -10,7 +10,7 @@ We will use a two differnet LLM models ***gemma2*** for chat intference and ***n
 ***See Architecture diagram:***
 ![Alt text](https://github.com/nkuhn-vmw/GenAI-for-TPCF-Samples/blob/main/spring-metal/spring-metal-arch.png "Spring-metal AI Architecture")
 
-## Create Service Intances for Spring-Metal
+### Create Service Intances for Spring-Metal
 
 ```bash
 #Create Chat Service
@@ -25,12 +25,19 @@ cf create-service postgres on-demand-postgres-db spring-metal-db
 
 ### Compile Spring-Metal with maven
 ```bash
+# Install java 1.17 if not already installed
+sudo apt install openjdk-17-jdk openjdk-17-jre
+sudo update-java-alternatives --set /usr/lib/jvm/java-1.17.0-openjdk-amd64
+export JAVA_HOME=/usr/lib/jvm/java-1.17.0-openjdk-amd64
+```
+
+```bash
+cd ./spring-metal
 mvn clean package -DskipTests
 ```
 
 ### Deploy
 ```bash
-cd ./spring-metal #navigate to spring-metal dir 
 cf push
 ```
 
