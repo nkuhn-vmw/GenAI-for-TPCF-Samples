@@ -37,11 +37,6 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
-    <!-- Commercial Spring Extensions -->
-    <repository>
-      <id>tanzu-spring-repo</id>
-      <url>https://artifactory.eng.vmware.com/api-auto-registration-docker-local</url>
-    </repository>
   </repositories>
 
   <dependencies>
