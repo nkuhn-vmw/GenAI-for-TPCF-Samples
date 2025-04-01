@@ -31,8 +31,20 @@
       <url>https://repo.spring.io/milestone</url>
     </repository>
     <repository>
-      <id>spring-snapshot</id>
+      <id>spring-snapshots</id>
+      <name>Spring Snapshots</name>
       <url>https://repo.spring.io/snapshot</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </repository>
+    <repository>
+      <name>Central Portal Snapshots</name>
+      <id>central-portal-snapshots</id>
+      <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
@@ -75,12 +87,12 @@
     <!-- Spring AI -->
     <dependency>
       <groupId>org.springframework.ai</groupId>
-      <artifactId>spring-ai-openai-spring-boot-starter</artifactId>
+      <artifactId>spring-ai-starter-model-openai</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.springframework.ai</groupId>
-      <artifactId>spring-ai-pgvector-store-spring-boot-starter</artifactId>
-    </dependency>
+	<groupId>org.springframework.ai</groupId>
+	<artifactId>spring-ai-starter-vector-store-pgvector</artifactId>
+   </dependency>
     <!-- Java CFEnv -->
     <dependency>
       <groupId>io.pivotal.cfenv</groupId>
@@ -180,7 +192,7 @@
       <dependency>
         <groupId>org.springframework.ai</groupId>
         <artifactId>spring-ai-bom</artifactId>
-        <version>${spring-ai.version}</version>
+        <version>1.0.0-SNAPSHOT</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
