@@ -10,5 +10,5 @@ applications:
   memory: 2G
   services:
   - nomic-embed-text
-  - gemma-2:2b
+  - gemma2:2b
   stack: cflinuxfs4
