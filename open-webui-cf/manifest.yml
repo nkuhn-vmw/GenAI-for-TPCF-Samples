@@ -9,6 +9,5 @@ applications:
   instances: 1
   memory: 2G
   services:
-  - nomic-embed-text
-  - gemma-2:2b
+  - my-multi-model-service-instance
   stack: cflinuxfs4
