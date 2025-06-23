@@ -11,15 +11,11 @@ This is a rather large python application, it may take a few minutes for the cf 
 ***See Architecture diagram:***
 ![Alt text](https://github.com/nkuhn-vmw/GenAI-for-TPCF-Samples/blob/main/open-webui-cf/open-webui-cf-arch.png "Spring-metal AI Architecture")
 
-## Create Service Intances for open-webui-cf
+## Create Service Intance for open-webui-cf
 
 ```bash
-#Create Chat Service
-cf create-service genai gemma2:2b gemma2:2b
-
-#Create Embedding Service
-cf create-service genai nomic-embed-text nomic-embed-text
-
+# Create service instance with a chat and an embedding model
+cf create-service genai multi-model-plan my-multi-model-service-instance
 ```
 
 ### Deploy
@@ -30,5 +26,4 @@ cf push
 
 ## Contributing
 Contributions to this project are welcome. Please ensure to follow the existing coding style and add unit tests for any new or changed functionality.
-
 
